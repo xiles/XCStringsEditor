@@ -229,14 +229,23 @@ struct ContentView: View {
         }
 
         Divider()
+
+        Button("Mark for Review") {
+            stringsModel.markNeedsReview(ids: itemIDs)
+        }
+        Button("Mark as Reviewed") {
+            stringsModel.reviewed(ids: itemIDs)
+        }
+
+        Divider()
         
-        Button("Mark Translate Later") {
+        Button("Mark for Translate Later") {
             stringsModel.markTranslateLater(ids: itemIDs, value: true)
         }
         Button("Unmark Translate Later") {
             stringsModel.markTranslateLater(ids: itemIDs, value: false)
         }
-        Button("Mark Needs Work") {
+        Button("Mark for Needs Work") {
             stringsModel.markNeedsWork(ids: itemIDs, value: true)
         }
         Button("Unmark Needs Work") {

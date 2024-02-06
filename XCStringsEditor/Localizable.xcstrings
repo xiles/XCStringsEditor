@@ -207,16 +207,19 @@
     "Many" : {
 
     },
-    "Mark Needs Review" : {
+    "Mark as Reviewed" : {
 
     },
-    "Mark Needs Work" : {
+    "Mark for Needs Work" : {
 
     },
-    "Mark Needs Work for All Languages" : {
+    "Mark for Needs Work for All Languages" : {
 
     },
-    "Mark Translate Later" : {
+    "Mark for Review" : {
+
+    },
+    "Mark for Translate Later" : {
 
     },
     "Modified" : {
@@ -311,9 +314,6 @@
 
     },
     "Translated" : {
-
-    },
-    "Unmark Needs Reviewed" : {
 
     },
     "Unmark Needs Work" : {

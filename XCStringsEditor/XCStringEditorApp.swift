@@ -99,16 +99,16 @@ struct XCStringEditorApp: App {
                 
                 Divider() // ------------------------
                 
-                Button("Mark Needs Review") {
+                Button("Mark for Review") {
                     stringsModel.markNeedsReview()
                 }
                 .disabled(stringsModel.selected.isEmpty)
-                Button("Unmark Needs Reviewed") {
+                Button("Mark as Reviewed") {
                     stringsModel.reviewed()
                 }
                 .disabled(stringsModel.selected.isEmpty)
 
-                Button("Mark Translate Later") {
+                Button("Mark for Translate Later") {
                     stringsModel.markTranslateLater(value: true)
                 }
                 .keyboardShortcut("l", modifiers: [.command]) // Cmd + L
@@ -120,13 +120,13 @@ struct XCStringEditorApp: App {
                 .keyboardShortcut("l", modifiers: [.shift, .command]) // Cmd + Shift + L
                 .disabled(stringsModel.selected.isEmpty)
                 
-                Button("Mark Needs Work") {
+                Button("Mark for Needs Work") {
                     stringsModel.markNeedsWork(value: true)
                 }
                 .keyboardShortcut("w", modifiers: [.control, .command]) // Cmd + Control + W
                 .disabled(stringsModel.selected.isEmpty)
 
-                Button("Mark Needs Work for All Languages") {
+                Button("Mark for Needs Work for All Languages") {
                     stringsModel.markNeedsWork(value: true, allLanguages: true)
                 }
                 .disabled(stringsModel.selected.isEmpty)
