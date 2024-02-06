@@ -1,0 +1,121 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld Item(s)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Item(s)"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Items(s)"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Items(s)"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Items(s)"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Items(s)"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld photos" : {
+      "localizations" : {
+        "ko" : {
+          "variations" : {
+            "device" : {
+              "iphone" : {
+                "variations" : {
+                  "plural" : {
+                    "other" : {
+                      "stringUnit" : {
+                        "state" : "needs_review",
+                        "value" : "%lld photos"
+                      }
+                    },
+                    "zero" : {
+                      "stringUnit" : {
+                        "state" : "translated",
+                        "value" : "사진 없음"
+                      }
+                    }
+                  }
+                }
+              },
+              "mac" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld photos"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld photos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "NEW" : {
+
+    },
+    "Open" : {
+      "localizations" : {
+        "ko" : {
+          "variations" : {
+            "device" : {
+              "iphone" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Open"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Open"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Unmark Translate Later" : {
+
+    }
+  },
+  "version" : "1.0"
+}

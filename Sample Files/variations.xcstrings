@@ -1,0 +1,127 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld Item(s)" : {
+      "localizations" : {
+        "ko" : {
+          "variations" : {
+            "device" : {
+              "applewatch" : {
+                "variations" : {
+                  "plural" : {
+                    "other" : {
+                      "stringUnit" : {
+                        "state" : "needs_review",
+                        "value" : "%lld Item(s)"
+                      }
+                    },
+                    "zero" : {
+                      "stringUnit" : {
+                        "state" : "needs_review",
+                        "value" : "%lld Item(s)"
+                      }
+                    }
+                  }
+                }
+              },
+              "ipad" : {
+                "variations" : {
+                  "plural" : {
+                    "other" : {
+                      "stringUnit" : {
+                        "state" : "needs_review",
+                        "value" : "%lld Item(s)"
+                      }
+                    },
+                    "zero" : {
+                      "stringUnit" : {
+                        "state" : "needs_review",
+                        "value" : "%lld Item(s)"
+                      }
+                    }
+                  }
+                }
+              },
+              "iphone" : {
+                "variations" : {
+                  "plural" : {
+                    "other" : {
+                      "stringUnit" : {
+                        "state" : "needs_review",
+                        "value" : "%lld Item(s)"
+                      }
+                    },
+                    "zero" : {
+                      "stringUnit" : {
+                        "state" : "needs_review",
+                        "value" : "%lld Item(s)"
+                      }
+                    }
+                  }
+                }
+              },
+              "mac" : {
+                "variations" : {
+                  "plural" : {
+                    "other" : {
+                      "stringUnit" : {
+                        "state" : "needs_review",
+                        "value" : "%lld Item(s)"
+                      }
+                    },
+                    "zero" : {
+                      "stringUnit" : {
+                        "state" : "needs_review",
+                        "value" : "%lld Item(s)"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Item(s)"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Item(s)"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Item(s)"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld Item(s)"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Add Item" : {
+
+    },
+    "Item at %@" : {
+
+    },
+    "Open" : {
+
+    }
+  },
+  "version" : "1.0"
+}

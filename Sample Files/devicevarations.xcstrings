@@ -1,0 +1,278 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+
+    },
+    "%@" : {
+
+    },
+    "%lld Item(s)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Item(s)"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Items(s)"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Items(s)"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Items(s)"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Items(s)"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld photos" : {
+      "localizations" : {
+        "ko" : {
+          "variations" : {
+            "device" : {
+              "iphone" : {
+                "variations" : {
+                  "plural" : {
+                    "other" : {
+                      "stringUnit" : {
+                        "state" : "needs_review",
+                        "value" : "%lld photos"
+                      }
+                    },
+                    "zero" : {
+                      "stringUnit" : {
+                        "state" : "translated",
+                        "value" : "사진 없음"
+                      }
+                    }
+                  }
+                }
+              },
+              "mac" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld photos"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld photos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "All Item(s)" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "All Item(s)"
+          }
+        }
+      }
+    },
+    "All Items" : {
+
+    },
+    "Auto Translate" : {
+
+    },
+    "Check Translation" : {
+
+    },
+    "Chinese(Simplified)" : {
+
+    },
+    "Chinese(Traditional)" : {
+
+    },
+    "Clear Translation" : {
+
+    },
+    "Comment" : {
+
+    },
+    "Copy from Source Text" : {
+
+    },
+    "Copy Source Text" : {
+
+    },
+    "Copy Translation" : {
+
+    },
+    "Default Localization (%@)" : {
+
+    },
+    "English" : {
+
+    },
+    "Filter" : {
+
+    },
+    "French" : {
+
+    },
+    "German" : {
+
+    },
+    "Google Translate API Key" : {
+
+    },
+    "Hide Stale Items" : {
+
+    },
+    "Hide Translate Later Items" : {
+
+    },
+    "Japanese" : {
+
+    },
+    "Key" : {
+
+    },
+    "Korean" : {
+
+    },
+    "Language" : {
+
+    },
+    "LATER" : {
+
+    },
+    "Mark Needs Review" : {
+
+    },
+    "Mark Needs Work" : {
+
+    },
+    "Mark Needs Work for All Languages" : {
+
+    },
+    "Mark Translate Later" : {
+
+    },
+    "Modified" : {
+
+    },
+    "Needs Review" : {
+
+    },
+    "NEEDS REVIEW" : {
+
+    },
+    "Needs Work" : {
+
+    },
+    "NEEDS WORK" : {
+
+    },
+    "New" : {
+
+    },
+    "NEW" : {
+
+    },
+    "Open" : {
+      "localizations" : {
+        "ko" : {
+          "variations" : {
+            "device" : {
+              "iphone" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Open"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "Open"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Reverse Translate" : {
+
+    },
+    "Reverse Translation" : {
+
+    },
+    "Russian" : {
+
+    },
+    "Save" : {
+
+    },
+    "Show Stale Items" : {
+
+    },
+    "Show Translate Later Items" : {
+
+    },
+    "Source = Translation" : {
+
+    },
+    "Spanish" : {
+
+    },
+    "STALE" : {
+
+    },
+    "State" : {
+
+    },
+    "Translate Later" : {
+
+    },
+    "Translated" : {
+
+    },
+    "Unmark Needs Reviewed" : {
+
+    },
+    "Unmark Needs Work" : {
+
+    },
+    "Unmark Translate Later" : {
+
+    }
+  },
+  "version" : "1.0"
+}
