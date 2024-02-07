@@ -914,7 +914,21 @@ class XCStringsModel {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(lines.joined(separator: "\n"), forType: .string)
     }
-    
+
+    func copySourceAndTranslationText(ids: Set<LocalizeItem.ID>? = nil) {
+        var lines = [String]()
+        let itemIDs = ids ?? self.selected
+        
+        for itemID in itemIDs {
+            guard let item = item(with: itemID) else {
+                continue
+            }
+            lines.append("\(item.sourceString) = \(item.translation ?? "")")
+        }
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(lines.joined(separator: "\n"), forType: .string)
+    }
+
     // MARK: -
     var settingsFileURL: URL? {
         guard let fileURL else {

@@ -82,7 +82,13 @@ struct XCStringEditorApp: App {
                 }
                 .keyboardShortcut("c", modifiers: [.command, .option]) // Cmd + Option + C
                 .disabled(stringsModel.selected.isEmpty)
-                
+
+                Button("Copy Source and Translation Text") {
+                    stringsModel.copySourceAndTranslationText()
+                }
+                .keyboardShortcut("c", modifiers: [.command, .option, .control]) // Cmd + Option + Control + C
+                .disabled(stringsModel.selected.isEmpty)
+
                 Divider() // ------------------------
                 
                 Button("Clear Translation") {
