@@ -28,7 +28,7 @@ XCStringsEditor is an **editor** built with pure SwiftUI that can edit the **.xc
 - Show/Hide "Needs Work" and "Translate Later" flagged items.
 
 ## Plans
-- [ ] Confirm close when there is a modification.
+- [x] Confirm close when there is a modification.
 - [ ] Update menu disable state for variations.
 - [ ] Open with .xcodeproj file.
 - [ ] Debounce handling for search text input.
