@@ -135,8 +135,11 @@ struct ContentView: View {
                 startMonitorKeyboardEvent()
                 
                 windowDelegate.allowClose = {
-                    showConfirmClose = true
-                    return stringsModel.canClose
+                    if stringsModel.canClose == false {
+                        showConfirmClose = true
+                        return false
+                    }
+                    return true
                 }
             }
             .onChange(of: stringsModel.sortOrder, { oldValue, newValue in
