@@ -65,9 +65,7 @@ class XCStringsModel {
             reloadData()
         }
     }
-    var isModified: Bool {
-        return allLocalizeItems.contains(where: { $0.isModified })
-    }
+    var isModified: Bool = false
     var forceClose: Bool = false
     var canClose: Bool { forceClose || isModified == false }
 
@@ -155,6 +153,7 @@ class XCStringsModel {
             } else {
                 self.languages.first!
             }
+            isModified = false
             
         } catch {
             print("Failed to load", error)
@@ -201,6 +200,7 @@ class XCStringsModel {
             let outputURL = fileURL
             
             try data.write(to: outputURL, options: [.atomic])
+            isModified = false
             
         } catch {
             print("Save failed", error)
@@ -234,7 +234,7 @@ class XCStringsModel {
                                 var pluralLocalization = deviceVariation[deviceType] ?? XCString.Localization()
                                 var pluralVariation = pluralLocalization.pluralVariation ?? [XCString.PluralType: XCString.Localization]()
                                 
-                                let stringUnit = XCString.Localization.StringUnit(state: item.needsReview ? .needsReview : .translated, value: translation)
+                                let stringUnit = XCString.Localization.StringUnit(state: pluralItem.needsReview ? .needsReview : .translated, value: translation)
                                 pluralVariation[pluralType] = XCString.Localization(stringUnit: stringUnit)
                                 
                                 pluralLocalization.pluralVariation = pluralVariation
@@ -251,7 +251,7 @@ class XCStringsModel {
                             }
 
                             // device variation (StringUnit)
-                            let stringUnit = XCString.Localization.StringUnit(state: item.needsReview ? .needsReview : .translated, value: translation)
+                            let stringUnit = XCString.Localization.StringUnit(state: subitem.needsReview ? .needsReview : .translated, value: translation)
                             
                             deviceVariation[deviceType] = XCString.Localization(stringUnit: stringUnit)
                             deviceLocalization.deviceVariation = deviceVariation
@@ -267,7 +267,7 @@ class XCStringsModel {
                         var pluralLocalization = xcstrings.strings[index].localizations[item.language] ?? XCString.Localization()
                         var pluralVariation = pluralLocalization.pluralVariation ?? [XCString.PluralType: XCString.Localization]()
                         
-                        let stringUnit = XCString.Localization.StringUnit(state: item.needsReview ? .needsReview : .translated, value: translation)
+                        let stringUnit = XCString.Localization.StringUnit(state: subitem.needsReview ? .needsReview : .translated, value: translation)
                         
                         pluralVariation[pluralType] = XCString.Localization(stringUnit: stringUnit)
                         pluralLocalization.pluralVariation = pluralVariation
@@ -625,6 +625,7 @@ class XCStringsModel {
         }
         item.isModified = true
         item.needsReview = false
+        isModified = true
 
         if translation.isEmpty == false {
             if let reverseTranslation {
@@ -756,7 +757,10 @@ class XCStringsModel {
             guard let item = item(with: itemID) else {
                 continue
             }
-            item.needsReview = true
+            if item.needsReview == false {
+                item.needsReview = true
+                isModified = true
+            }
         }
     }
     
@@ -767,7 +771,10 @@ class XCStringsModel {
             guard let item = item(with: itemID) else {
                 continue
             }
-            item.needsReview = false
+            if item.needsReview == true {
+                item.needsReview = false
+                isModified = true
+            }
         }
     }
     
