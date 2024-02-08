@@ -120,6 +120,9 @@
     "Auto Translate" : {
 
     },
+    "Cancel" : {
+
+    },
     "Check Translation" : {
 
     },
@@ -138,6 +141,9 @@
     "Comment" : {
 
     },
+    "Confirm Close" : {
+
+    },
     "Copy from Source Text" : {
 
     },
@@ -151,6 +157,9 @@
 
     },
     "Default Localization (%@)" : {
+
+    },
+    "Discard Changes" : {
 
     },
     "English" : {
@@ -308,6 +317,9 @@
 
     },
     "State" : {
+
+    },
+    "There are unsaved translations. Do you want to discard the changes?" : {
 
     },
     "Translate" : {

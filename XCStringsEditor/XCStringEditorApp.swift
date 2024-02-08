@@ -13,6 +13,7 @@ extension Notification.Name {
 
 @main
 struct XCStringEditorApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Environment(\.controlActiveState) private var controlActiveState
     
     @State private var stringsModel: XCStringsModel = XCStringsModel()
@@ -21,6 +22,7 @@ struct XCStringEditorApp: App {
         WindowGroup {
             ContentView()
                 .environment(stringsModel)
+                .environment(appDelegate.windowDelegate)
                 .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
                     if let url = stringsModel.settingsFileURL {
                         stringsModel.settings.save(to: url)

@@ -65,6 +65,11 @@ class XCStringsModel {
             reloadData()
         }
     }
+    var isModified: Bool {
+        return allLocalizeItems.contains(where: { $0.isModified })
+    }
+    var forceClose: Bool = false
+    var canClose: Bool { forceClose || isModified == false }
 
 //    private var debouncedSearchText: String = ""
 //    private var cancellables = Set<AnyCancellable>()

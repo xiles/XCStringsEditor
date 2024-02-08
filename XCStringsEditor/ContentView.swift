@@ -19,12 +19,15 @@ struct ContentView: View {
     }
     
     @Environment(XCStringsModel.self) private var stringsModel
+    @Environment(WindowDelegate.self) private var windowDelegate
     
     @State private var translation: String = ""
     @State private var isEditing: Bool = false
     @State private var nextEditingItem: LocalizeItem?
     @FocusState private var focusedField: Field?
-
+    @State private var showConfirmClose: Bool = false
+    
+    
 //    init() {
 //        #if DEBUG
 //        logger.debug("init ContentView")
@@ -130,6 +133,11 @@ struct ContentView: View {
             .navigationTitle(stringsModel.title ?? "XCStringsEditor")
             .onAppear {
                 startMonitorKeyboardEvent()
+                
+                windowDelegate.allowClose = {
+                    showConfirmClose = true
+                    return stringsModel.canClose
+                }
             }
             .onChange(of: stringsModel.sortOrder, { oldValue, newValue in
                 stringsModel.sort(using: newValue)
@@ -212,6 +220,15 @@ struct ContentView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text("Google Translate API Key must be set in settings to use this function.")
+            }
+            .alert("Confirm Close", isPresented: $showConfirmClose) {
+                Button("Cancel", role: .cancel) {}
+                Button("Discard Changes", role: .destructive) {
+                    stringsModel.forceClose = true
+                    NSApp.terminate(nil)
+                }
+            } message: {
+                Text("There are unsaved translations. Do you want to discard the changes?")
             }
 
         } // NavigationStack
