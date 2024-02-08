@@ -174,6 +174,22 @@ struct XCStringEditorApp: App {
                 }
                 Divider()
             }
+            
+            CommandGroup(replacing: .appInfo) {
+                Button("About XCStringsEditor") {
+                    NSApplication.shared.orderFrontStandardAboutPanel(
+                        options: [
+                            NSApplication.AboutPanelOptionKey.credits: NSAttributedString(
+                                string: "https://github.com/xiles",
+                                attributes: [
+                                    NSAttributedString.Key.font: NSFont.boldSystemFont(
+                                        ofSize: NSFont.smallSystemFontSize)
+                                ]
+                            )
+                        ]
+                    )
+                }
+            }
         } // commands
         
         Settings {
