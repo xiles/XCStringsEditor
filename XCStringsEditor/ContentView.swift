@@ -292,6 +292,12 @@ struct ContentView: View {
     }
     
     private func save() {
+//        #if DEBUG
+//        for item in stringsModel.allLocalizeItems {
+//            print(item)
+//        }
+//        #endif
+
         stringsModel.save()
     }
     

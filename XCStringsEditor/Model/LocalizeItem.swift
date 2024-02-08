@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @Observable
-class LocalizeItem: Identifiable, Hashable {
+class LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
     static func == (lhs: LocalizeItem, rhs: LocalizeItem) -> Bool {
         return lhs.id == rhs.id
         && lhs.translation == rhs.translation
@@ -77,6 +77,17 @@ class LocalizeItem: Identifiable, Hashable {
 //    var isEditing: Bool = false
     
     var children: [LocalizeItem]?
+    
+    var description: String {
+        var result = "\(key), \(language.code), \(translation ?? "nil"), NeedsReview: \(needsReview), Modified: \(isModified)"
+        
+        if let children {
+            let lines = children.map { $0.description }
+            result.append("\n[\(lines.joined(separator: ",\n"))\n]")
+        }
+
+        return result
+    }
 
     static func baseID(_ id: LocalizeItem.ID) -> LocalizeItem.ID {
         let components = id.components(separatedBy: LocalizeItem.ID_DIVIDER)
