@@ -7,47 +7,6 @@
 
 import Foundation
 
-enum Language: String, Hashable, Identifiable, CustomStringConvertible {
-    case english = "en"
-    case korean = "ko" // ko
-    case german = "de"
-    case spanish = "es"
-    case french = "fr"
-    case japanese = "ja"
-    case chinese = "zh-Hans" // zh-CN
-    case chineseTraditional = "zh-Hant" // zh-TW
-    case russian = "ru"
-    
-    var id: Self { self }
-
-    init?(code: String) {
-        self.init(rawValue: code)
-    }
-
-    var code: String {
-        return self.rawValue
-    }
-    
-    var localizedName: String {
-        switch self {
-        case .english: return String(localized: "English")
-        case .korean: return String(localized: "Korean")
-        case .german: return String(localized: "German")
-        case .spanish: return String(localized: "Spanish")
-        case .french: return String(localized: "French")
-        case .japanese: return String(localized: "Japanese")
-        case .chinese: return String(localized: "Chinese(Simplified)")
-        case .chineseTraditional: return String(localized: "Chinese(Traditional)")
-        case .russian: return String(localized: "Russian")
-        }
-    }
-    
-    var description: String {
-        return code
-    }
-
-}
-
 struct XCStrings: Codable {
     var version: String
     var sourceLanguage: Language
