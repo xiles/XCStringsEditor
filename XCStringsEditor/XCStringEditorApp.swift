@@ -139,6 +139,10 @@ struct XCStringEditorApp: App {
                 }
                 .disabled(stringsModel.selected.isEmpty)
                 .keyboardShortcut("w", modifiers: [.control, .option, .command]) // Cmd + Option + Control + W
+                
+                Button("Clear Needs Work for All Languages") {
+                    stringsModel.clearNeedsWork(allLanguages: true)
+                }
 
                 Button("Unmark Needs Work") {
                     stringsModel.markNeedsWork(value: false)

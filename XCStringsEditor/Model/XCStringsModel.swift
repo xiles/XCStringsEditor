@@ -882,6 +882,32 @@ class XCStringsModel {
             settings.save(to: settingsFileURL)
         }
     }
+        
+    func clearNeedsWork(allLanguages: Bool = false) {
+        let items = allLanguages ? self.allLocalizeItems : self.localizeItems
+        
+        func unmarkNeedsWork(items: [LocalizeItem]) {
+            for item in items {
+                if item.needsWork {
+                    item.needsWork = false
+                    if let index = settings.needsWork.firstIndex(of: item.id) {
+                        settings.needsWork.remove(at: index)
+                    }
+                }
+                
+                // children
+                if let children = item.children {
+                    unmarkNeedsWork(items: children)
+                }
+            }
+        }
+        
+        unmarkNeedsWork(items: items)
+
+        if let settingsFileURL {
+            settings.save(to: settingsFileURL)
+        }
+    }
 
     
     func copyFromSourceText(ids: Set<LocalizeItem.ID>? = nil) {
