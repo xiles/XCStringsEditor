@@ -101,14 +101,14 @@
 				196FC3D02B6087140066D068 /* Model */,
 				19ABC3C62B5BA17C009568D2 /* XCStringEditorApp.swift */,
 				19ABC3C82B5BA17C009568D2 /* ContentView.swift */,
-				19ABC3CC2B5BA17D009568D2 /* Assets.xcassets */,
-				19ABC3D12B5BA17D009568D2 /* XCStringEditor.entitlements */,
-				19ABC3D92B5C0E87009568D2 /* Localizable.xcstrings */,
-				19ABC3CE2B5BA17D009568D2 /* Preview Content */,
 				190A009D2B63FCCF009FBAED /* SettingsView.swift */,
 				196D574C2B6FB0C700B2F265 /* ItemStateView.swift */,
 				197E645F2B7461E6008251BE /* WindowDelegate.swift */,
 				197E64612B746237008251BE /* AppDelegate.swift */,
+				19ABC3CC2B5BA17D009568D2 /* Assets.xcassets */,
+				19ABC3D12B5BA17D009568D2 /* XCStringEditor.entitlements */,
+				19ABC3D92B5C0E87009568D2 /* Localizable.xcstrings */,
+				19ABC3CE2B5BA17D009568D2 /* Preview Content */,
 			);
 			path = XCStringsEditor;
 			sourceTree = "<group>";
