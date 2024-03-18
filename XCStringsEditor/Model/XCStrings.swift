@@ -136,6 +136,7 @@ struct XCString: Codable {
     enum PluralType: String, Hashable {
         case zero
         case one
+        case two
         case few
         case many
         case other
@@ -144,9 +145,10 @@ struct XCString: Codable {
             switch self {
             case .zero: return 0
             case .one: return 1
-            case .few: return 2
-            case .many: return 3
-            case .other: return 4
+            case .two: return 2
+            case .few: return 3
+            case .many: return 4
+            case .other: return 5
             }
         }
         
@@ -156,6 +158,8 @@ struct XCString: Codable {
                 return String(localized: "Zero")
             case .one:
                 return String(localized: "One")
+            case .two:
+                return String(localized: "Two")
             case .few:
                 return String(localized: "Few")
             case .many:
