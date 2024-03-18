@@ -293,7 +293,23 @@ class XCStringsModel {
     private func reloadData() {
         // TODO: filter sub items
         
-        print(#function, currentLanguage)
+//        print(#function, currentLanguage)
+        
+        func itemContains(_ item: LocalizeItem, matching: (LocalizeItem) -> Bool) -> Bool {
+            if item.children == nil {
+                if matching(item) == true {
+                    return true
+                }
+            } else if let children = item.children {
+                for subitem in children {
+                    if itemContains(subitem, matching: matching) == true {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+        
         
         localizeItems = allLocalizeItems.filter {
             if $0.language != currentLanguage {
@@ -308,7 +324,17 @@ class XCStringsModel {
             }
             
             // filter
+            if filter.new == true {
+                if itemContains($0, matching: { item in item.translation != nil }) == true {
+                    return false
+                }
+            }
+            
             if filter.modified == true {
+                if itemContains($0, matching: { item in item.isModified == false }) == true {
+                    return false
+                }
+
                 if let children = $0.children {
                     if children.allSatisfy({ $0.isModified == false }) {
                         return false
