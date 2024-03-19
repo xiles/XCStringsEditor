@@ -325,62 +325,43 @@ class XCStringsModel {
             
             // filter
             if filter.new == true {
-                if itemContains($0, matching: { item in item.translation != nil }) == true {
+                if itemContains($0, matching: { item in item.translation == nil }) == false {
+                    return false
+                }
+            }
+
+            if filter.translated == true {
+                if itemContains($0, matching: { item in item.translation == nil }) == true {
+                    return false
+                }
+            }
+
+            if filter.modified == true {
+                if itemContains($0, matching: { item in item.isModified == true }) == false {
                     return false
                 }
             }
             
-            if filter.modified == true {
-                if itemContains($0, matching: { item in item.isModified == false }) == true {
-                    return false
-                }
-
-                if let children = $0.children {
-                    if children.allSatisfy({ $0.isModified == false }) {
-                        return false
-                    }
-                } else if $0.isModified == false {
-                    return false
-                }
-            }
             if filter.needsReview == true {
-                if $0.needsReview == false {
+                if itemContains($0, matching: { item in item.needsReview == true }) == false {
                     return false
-                } else if let children = $0.children {
-                    if children.contains(where: { $0.needsReview == false } ) {
-                        return false
-                    }
                 }
             }
-            if filter.translated == true {
-                if $0.translation == nil {
-                    return false
-                } else if let children = $0.children {
-                    if children.contains(where: { $0.translation == nil } ) {
-                        return false
-                    }
-                }
-            }
+            
             if filter.needsWork == true {
-                if $0.needsWork == false {
+                if itemContains($0, matching: { item in item.needsWork == true }) == false {
                     return false
-                } else if let children = $0.children {
-                    if children.contains(where: { $0.needsWork == false } ) {
-                        return false
-                    }
                 }
             }
+            
             if filter.translateLater == true {
-                if $0.translateLater == false {
+                if itemContains($0, matching: { item in item.translateLater == true }) == false {
                     return false
-                } else if let children = $0.children {
-                    if children.contains(where: { $0.translateLater == false } ) {
-                        return false
-                    }
                 }
             }
+            
             if filter.sourceEqualTranslation == true {
-                if $0.children == nil && $0.sourceString != $0.translation {
+                if itemContains($0, matching: { item in item.sourceString == item.translation }) == false {
                     return false
                 }
             }
