@@ -295,22 +295,6 @@ class XCStringsModel {
         
 //        print(#function, currentLanguage)
         
-        func itemContains(_ item: LocalizeItem, matching: (LocalizeItem) -> Bool) -> Bool {
-            if item.children == nil {
-                if matching(item) == true {
-                    return true
-                }
-            } else if let children = item.children {
-                for subitem in children {
-                    if itemContains(subitem, matching: matching) == true {
-                        return true
-                    }
-                }
-            }
-            return false
-        }
-        
-        
         localizeItems = allLocalizeItems.filter {
             if $0.language != currentLanguage {
                 return false
@@ -325,43 +309,43 @@ class XCStringsModel {
             
             // filter
             if filter.new == true {
-                if itemContains($0, matching: { item in item.translation == nil }) == false {
+                if $0.contains(matching: { item in item.translation == nil }) == false {
                     return false
                 }
             }
 
             if filter.translated == true {
-                if itemContains($0, matching: { item in item.translation == nil }) == true {
+                if $0.contains(matching: { item in item.translation == nil }) == true {
                     return false
                 }
             }
 
             if filter.modified == true {
-                if itemContains($0, matching: { item in item.isModified == true }) == false {
+                if $0.contains(matching: { item in item.isModified == true }) == false {
                     return false
                 }
             }
             
             if filter.needsReview == true {
-                if itemContains($0, matching: { item in item.needsReview == true }) == false {
+                if $0.contains(matching: { item in item.needsReview == true }) == false {
                     return false
                 }
             }
             
             if filter.needsWork == true {
-                if itemContains($0, matching: { item in item.needsWork == true }) == false {
+                if $0.contains(matching: { item in item.needsWork == true }) == false {
                     return false
                 }
             }
             
             if filter.translateLater == true {
-                if itemContains($0, matching: { item in item.translateLater == true }) == false {
+                if $0.contains(matching: { item in item.translateLater == true }) == false {
                     return false
                 }
             }
             
             if filter.sourceEqualTranslation == true {
-                if itemContains($0, matching: { item in item.sourceString == item.translation }) == false {
+                if $0.contains(matching: { item in item.sourceString == item.translation }) == false {
                     return false
                 }
             }

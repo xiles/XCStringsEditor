@@ -59,10 +59,10 @@ class LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
         } else if needsReview {
             return .needsReview
         } else {
-            if let children {
-                return children.allSatisfy({ $0.translation != nil }) ? .translated : .new
+            if contains(matching: { $0.translation == nil }) {
+                return .new
             } else {
-                return translation == nil ? .new : .translated
+                return .translated
             }
         }
     }
@@ -87,6 +87,29 @@ class LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
         }
 
         return result
+    }
+    
+    /// Check if the item is matched or contains matched subitems with matching closure
+    ///
+    /// - Parameter matching: matching condition closure
+    /// - returns: Returns true if the item is matched or contains matched subitems. Otherwise returns false.
+    func contains(matching: (LocalizeItem) -> Bool) -> Bool {
+        return Self.itemContains(self, matching: matching)
+    }
+
+    static func itemContains(_ item: LocalizeItem, matching: (LocalizeItem) -> Bool) -> Bool {
+        if item.children == nil {
+            if matching(item) == true {
+                return true
+            }
+        } else if let children = item.children {
+            for subitem in children {
+                if itemContains(subitem, matching: matching) == true {
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     static func baseID(_ id: LocalizeItem.ID) -> LocalizeItem.ID {
