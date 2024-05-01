@@ -94,6 +94,7 @@ class XCStringsModel {
     var settings: FileSettings!
     
     var showGoogleAPIKeyAlert: Bool = false
+    var showTranslateDoneAlert: Bool = false
 
     init() {
         if let apiKey = UserDefaults.standard.string(forKey: "GoogleTranslateAPIKey") {
@@ -674,7 +675,7 @@ class XCStringsModel {
         }
     }
 
-    func translate(ids: Set<LocalizeItem.ID>? = nil) {
+    func translate(ids: Set<LocalizeItem.ID>? = nil) async {
         guard GoogleTranslate.shared.isAvailable == true else {
             showGoogleAPIKeyAlert = true
             return
@@ -682,16 +683,14 @@ class XCStringsModel {
         
         let itemIDs = ids ?? self.selected
         
-        Task {
-            for itemID in itemIDs {
-                guard let item = self.item(with: itemID) else {
-                    continue
-                }
-                
-                let (translation, reverseTranslation) = await self.translate(text: item.sourceString, language: item.language)
-                if let translation {
-                    self.updateTranslation(for: itemID, with: translation, reverseTranslation: reverseTranslation)
-                }
+        for itemID in itemIDs {
+            guard let item = self.item(with: itemID) else {
+                continue
+            }
+            
+            let (translation, reverseTranslation) = await self.translate(text: item.sourceString, language: item.language)
+            if let translation {
+                self.updateTranslation(for: itemID, with: translation, reverseTranslation: reverseTranslation)
             }
         }
     }

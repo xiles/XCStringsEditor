@@ -28,6 +28,9 @@ struct XCStringEditorApp: App {
                         stringsModel.settings.save(to: url)
                     }
                 }
+                .alert("Translation Completed", isPresented: $stringsModel.showTranslateDoneAlert) {
+                    Button("OK", role: .cancel) {}
+                }
         }
         .commands {
             CommandGroup(replacing: .newItem) {
@@ -153,7 +156,10 @@ struct XCStringEditorApp: App {
                 Divider() // ------------------------
                 
                 Button("Auto Translate") {
-                    stringsModel.translate()
+                    Task {
+                        await stringsModel.translate()
+                        stringsModel.showTranslateDoneAlert = true
+                    }
                 }
                 .keyboardShortcut("t", modifiers: [.command]) // Cmd + T
                 .disabled(stringsModel.selected.isEmpty)

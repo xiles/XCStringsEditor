@@ -223,7 +223,7 @@ struct ContentView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text("Google Translate API Key must be set in settings to use this function.")
-            }
+            }            
             .alert("Confirm Close", isPresented: $showConfirmClose) {
                 Button("Cancel", role: .cancel) {}
                 Button("Discard Changes", role: .destructive) {
@@ -233,7 +233,6 @@ struct ContentView: View {
             } message: {
                 Text("There are unsaved translations. Do you want to discard the changes?")
             }
-
         } // NavigationStack
     }
     
@@ -242,7 +241,11 @@ struct ContentView: View {
         let itemIDs = contextMenuItemIDs(itemID: item.id)
 
         Button("Auto Translate") {
-            stringsModel.translate(ids: itemIDs)
+            Task {
+                await stringsModel.translate(ids: itemIDs)
+                
+                stringsModel.showTranslateDoneAlert = true
+            }
         }
         Button("Reverse Translate") {
             stringsModel.reverseTranslate(ids: itemIDs)
