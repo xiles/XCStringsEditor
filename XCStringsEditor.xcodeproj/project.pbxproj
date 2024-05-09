@@ -17,6 +17,11 @@
 		197E64602B7461E6008251BE /* WindowDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197E645F2B7461E6008251BE /* WindowDelegate.swift */; };
 		197E64622B746237008251BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197E64612B746237008251BE /* AppDelegate.swift */; };
 		197E64642B74F8CD008251BE /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197E64632B74F8CD008251BE /* Language.swift */; };
+		1983DE222BEBBD2B006D8815 /* TranslateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1983DE212BEBBD2B006D8815 /* TranslateService.swift */; };
+		1983DE242BEBBE63006D8815 /* DeepL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1983DE232BEBBE63006D8815 /* DeepL.swift */; };
+		1983DE272BEBC024006D8815 /* TranslationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1983DE262BEBC024006D8815 /* TranslationStatus.swift */; };
+		1983DE292BEBC293006D8815 /* XCStringsModel+GoogleTranslate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1983DE282BEBC293006D8815 /* XCStringsModel+GoogleTranslate.swift */; };
+		1983DE2B2BEBC2A9006D8815 /* XCStringsModel+DeepL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1983DE2A2BEBC2A9006D8815 /* XCStringsModel+DeepL.swift */; };
 		19ABC3C72B5BA17C009568D2 /* XCStringEditorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19ABC3C62B5BA17C009568D2 /* XCStringEditorApp.swift */; };
 		19ABC3C92B5BA17C009568D2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19ABC3C82B5BA17C009568D2 /* ContentView.swift */; };
 		19ABC3CD2B5BA17D009568D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19ABC3CC2B5BA17D009568D2 /* Assets.xcassets */; };

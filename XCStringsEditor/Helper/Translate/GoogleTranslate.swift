@@ -63,7 +63,7 @@ public class GoogleTranslate {
     private let session = URLSession(configuration: .default)
     
     public var isAvailable: Bool {
-        return apiKey != nil
+        return apiKey != nil && apiKey.isEmpty == false
     }
     
     

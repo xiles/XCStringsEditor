@@ -219,7 +219,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .alert("Translate", isPresented: $stringsModel.showGoogleAPIKeyAlert) {
+            .alert("Translate", isPresented: $stringsModel.showAPIKeyAlert) {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text("Google Translate API Key must be set in settings to use this function.")

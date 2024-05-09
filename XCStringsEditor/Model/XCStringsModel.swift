@@ -93,14 +93,17 @@ class XCStringsModel {
 
     var settings: FileSettings!
     
-    var showGoogleAPIKeyAlert: Bool = false
-    var showTranslateDoneAlert: Bool = false
+    var showAPIKeyAlert: Bool = false
+    var isLoading: Bool = false
 
     init() {
         if let apiKey = UserDefaults.standard.string(forKey: "GoogleTranslateAPIKey") {
             GoogleTranslate.shared.configure(apiKey: apiKey)
         }
-        
+        if let apiKey = UserDefaults.standard.string(forKey: "DeeplAPIKey") {
+            DeepL.shared.configure(apiKey: apiKey)
+        }
+
         translateLaterItemsHidden = UserDefaults.standard.bool(forKey: "TranslateLaterItemsHidden")
         staleItemsHidden = UserDefaults.standard.bool(forKey: "StaleItemsHidden")
 
@@ -635,109 +638,48 @@ class XCStringsModel {
                 continue
             }
             item.translation = nil
+            item.reverseTranslation = nil
+            item.isModified = false
         }
+        reloadData()
     }
     
-    private func translate(text: String, language: Language) async -> (String?, String?) {
-        guard let xcstrings else {
-            return (nil, nil)
-        }
-        
-        do {
-            let sourceLanguage = xcstrings.sourceLanguage
-            
-            let translation = try await GoogleTranslate.shared.translate(text, source: sourceLanguage.code, target: language.code)
-            let reverseTranslation = try await GoogleTranslate.shared.translate(translation, source: language.code, target: sourceLanguage.code)
-
-            return (translation, reverseTranslation)
-
-        } catch {
-            return (nil, nil)
-        }
-    }
-    
-    private func translate(text: String, from sourceLanguage: Language, to targetLanguage: Language) async -> String? {
-        do {
-            let translation = try await GoogleTranslate.shared.translate(text, source: sourceLanguage.code, target: targetLanguage.code)
-            return translation
-            
-        } catch {
-            return nil
-        }
-    }
-
-    func detectLanguage(text: String) async -> String? {
-        do {
-            let languages = try await GoogleTranslate.shared.detectLanguage(text)
-            return languages.first?.language
-        } catch {
-            return nil
-        }
-    }
-
     func translate(ids: Set<LocalizeItem.ID>? = nil) async {
-        guard GoogleTranslate.shared.isAvailable == true else {
-            showGoogleAPIKeyAlert = true
-            return
-        }
+        isLoading = true
         
-        let itemIDs = ids ?? self.selected
+        let translateService = TranslateService(rawValue: UserDefaults.standard.string(forKey: "TranslateService") ?? "")
         
-        for itemID in itemIDs {
-            guard let item = self.item(with: itemID) else {
-                continue
-            }
+        switch translateService {
+        case .google:
+            await translateByGoogle(ids: ids)
             
-            let (translation, reverseTranslation) = await self.translate(text: item.sourceString, language: item.language)
-            if let translation {
-                self.updateTranslation(for: itemID, with: translation, reverseTranslation: reverseTranslation)
-            }
+        case .deepL:
+            await translateByDeepL(ids: ids)
+            
+        default:
+            showAPIKeyAlert = true
         }
-    }
-
-    func reverseTranslate(ids: Set<LocalizeItem.ID>? = nil) {
-        guard GoogleTranslate.shared.isAvailable == true else {
-            showGoogleAPIKeyAlert = true
-            return
-        }
-
-        let itemIDs = ids ?? self.selected
-
-        Task {
-            for itemID in itemIDs {
-                guard
-                    let item = self.item(with: itemID),
-                    let translation = item.translation, translation.isEmpty == false
-                else {
-                    continue
-                }
-                
-                let reverseTranslation = await self.translate(text: translation, from: item.language, to: xcstrings?.sourceLanguage ?? .english)
-                item.reverseTranslation = reverseTranslation
-            }
-        }
+//        reloadData()
+        
+        isLoading = false
     }
     
-    func detectLanguage() {
-//        Task {
-//            for id in self.selected {
-//                guard
-//                    let item = self.item(with: id),
-//                    let translation = item.translation, translation.isEmpty == false
-//                else {
-//                    continue
-//                }
-//                
-//                let languageCode = await self.detectLanguage(text: translation)
-////                print("detection", languageCode, id)
-//                if languageCode == "zh-CN" {
-//                    print("found zh-CN", id)
-//                    item.needsWork = true
-//                }
-//            }
-//            self.selected = []
-//            print("Done Detection")
-//        }
+    func reverseTranslate(ids: Set<LocalizeItem.ID>? = nil) {
+        isLoading = true
+
+        let translateService = TranslateService(rawValue: UserDefaults.standard.string(forKey: "TranslateService") ?? "")
+        
+        switch translateService {
+        case .google:
+            reverseTranslateByGoogle(ids: ids)
+        case .deepL:
+            reverseTranslateByDeepL(ids: ids)
+        default:
+            showAPIKeyAlert = true
+        }
+//        reloadData()
+        
+        isLoading = false
     }
 
     func markNeedsReview(ids: Set<LocalizeItem.ID>? = nil) {
