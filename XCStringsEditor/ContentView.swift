@@ -11,6 +11,19 @@ import OSLog
 
 fileprivate let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ContentView")
 
+struct ActivityIndicatorModifier: ViewModifier {
+    @Binding var isPresented: Bool
+    
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+            if isPresented {
+                ProgressView()
+            }
+        }
+    }
+}
+
 struct ContentView: View {
     enum Field: Hashable {
         case search
@@ -233,7 +246,9 @@ struct ContentView: View {
             } message: {
                 Text("There are unsaved translations. Do you want to discard the changes?")
             }
+            
         } // NavigationStack
+        .modifier(ActivityIndicatorModifier(isPresented: $stringsModel.isLoading))
     }
     
     @ViewBuilder
