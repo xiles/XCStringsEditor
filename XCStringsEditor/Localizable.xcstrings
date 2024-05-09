@@ -4,6 +4,9 @@
     "" : {
 
     },
+    " " : {
+
+    },
     "%@" : {
 
     },
@@ -98,6 +101,9 @@
     "About XCStringsEditor" : {
 
     },
+    "All" : {
+
+    },
     "All Item(s)" : {
       "localizations" : {
         "ko" : {
@@ -120,13 +126,22 @@
     "Apple Watch" : {
 
     },
+    "Arabic" : {
+
+    },
     "Auto Translate" : {
 
     },
     "Cancel" : {
 
     },
+    "Catalan" : {
+
+    },
     "Check Translation" : {
+
+    },
+    "Chinese (Hong Kong)" : {
 
     },
     "Chinese(Simplified)" : {
@@ -136,6 +151,9 @@
 
     },
     "Clear Menu" : {
+
+    },
+    "Clear Needs Work for All Languages" : {
 
     },
     "Clear Translation" : {
@@ -159,13 +177,43 @@
     "Copy Translation" : {
 
     },
+    "Croatian" : {
+
+    },
+    "Czech" : {
+
+    },
+    "Danish" : {
+
+    },
+    "DeepL API Key" : {
+
+    },
     "Default Localization (%@)" : {
+
+    },
+    "Different" : {
 
     },
     "Discard Changes" : {
 
     },
+    "Dutch" : {
+
+    },
     "English" : {
+
+    },
+    "English (Australia)" : {
+
+    },
+    "English (India)" : {
+
+    },
+    "English (United Kingdom" : {
+
+    },
+    "Exact" : {
 
     },
     "Few" : {
@@ -174,7 +222,13 @@
     "Filter" : {
 
     },
+    "Finnish" : {
+
+    },
     "French" : {
+
+    },
+    "French (Canada)" : {
 
     },
     "German" : {
@@ -186,10 +240,25 @@
     "Google Translate API Key must be set in settings to use this function." : {
 
     },
+    "Greek" : {
+
+    },
+    "Hebrew" : {
+
+    },
     "Hide Stale Items" : {
 
     },
     "Hide Translate Later Items" : {
+
+    },
+    "Hindi" : {
+
+    },
+    "Hungarian" : {
+
+    },
+    "Indonesian" : {
 
     },
     "iPad" : {
@@ -199,6 +268,9 @@
 
     },
     "iPod" : {
+
+    },
+    "Italian" : {
 
     },
     "Japanese" : {
@@ -219,6 +291,9 @@
     "Mac" : {
 
     },
+    "Malay" : {
+
+    },
     "Many" : {
 
     },
@@ -235,6 +310,9 @@
 
     },
     "Mark for Translate Later" : {
+
+    },
+    "Missing" : {
 
     },
     "Modified" : {
@@ -256,6 +334,9 @@
 
     },
     "NEW" : {
+
+    },
+    "Norwegian Bokmål" : {
 
     },
     "OK" : {
@@ -292,10 +373,25 @@
     "Other" : {
 
     },
+    "Polish" : {
+
+    },
+    "Portugese (Brazil)" : {
+
+    },
+    "Portugese (Portugal)" : {
+
+    },
+    "Reverse" : {
+
+    },
     "Reverse Translate" : {
 
     },
     "Reverse Translation" : {
+
+    },
+    "Romanian" : {
 
     },
     "Russian" : {
@@ -310,16 +406,31 @@
     "Show Translate Later Items" : {
 
     },
+    "Similiar" : {
+
+    },
+    "Slovak" : {
+
+    },
     "Source = Translation" : {
 
     },
     "Spanish" : {
 
     },
+    "Spanish (Latin America)" : {
+
+    },
     "STALE" : {
 
     },
     "State" : {
+
+    },
+    "Swedish" : {
+
+    },
+    "Thai" : {
 
     },
     "There are unsaved translations. Do you want to discard the changes?" : {
@@ -331,13 +442,34 @@
     "Translate Later" : {
 
     },
+    "Translate Service" : {
+
+    },
     "Translated" : {
+
+    },
+    "Translation" : {
+
+    },
+    "Turkish" : {
+
+    },
+    "Two" : {
+
+    },
+    "Ukrainian" : {
 
     },
     "Unmark Needs Work" : {
 
     },
     "Unmark Translate Later" : {
+
+    },
+    "Untranslated" : {
+
+    },
+    "Vietnamese" : {
 
     },
     "Zero" : {
