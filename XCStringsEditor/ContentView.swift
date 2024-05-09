@@ -79,7 +79,7 @@ struct ContentView: View {
                 TableColumn(stringsModel.currentLanguage.localizedName) { item in
                     ZStack {
                         Text(verbatim: item.translation ?? item.sourceString)
-                            .foregroundStyle(item.translation == nil ? .secondary : (item.needsWork ? Color.orange : .primary))
+                            .foregroundStyle(item.translation == nil ? .secondary.opacity(0.5) : (item.needsWork ? Color.orange : .primary))
                             .opacity(isEditing && item.id == stringsModel.editingID ? 0.0 : 1.0)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .lineLimit(nil)
@@ -116,10 +116,24 @@ struct ContentView: View {
                 
                 // Reverse Translation
                 TableColumn("Reverse Translation") { item in
-                    Text(verbatim: item.reverseTranslation ?? "")
+                    if isReverseTranslationMatch(item) {
+                        (
+                            Text(
+                                Image(systemName: isReverseTranslationExact(item) ? "checkmark.circle.fill" : "checkmark.circle")
+                            )
+                            .foregroundStyle(.green)
+                            + Text(" ") +
+                            Text(verbatim: item.reverseTranslation ?? "")
+                        )
                         .lineLimit(nil)
                         .multilineTextAlignment(.leading)
                         .fixedSize(horizontal: false, vertical: true)
+                    } else {
+                        Text(verbatim: item.reverseTranslation ?? "")
+                            .lineLimit(nil)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
                 // Comment
                 TableColumn("Comment") { item in
@@ -188,7 +202,20 @@ struct ContentView: View {
                         Divider()
                         Group {
                             Toggle("New", isOn: $stringsModel.filter.new)
-                            Toggle("Translated", isOn: $stringsModel.filter.translated)
+//                            Toggle("Translated", isOn: $stringsModel.filter.translated)
+                            Picker(selection: $stringsModel.filter.translated, label: Text("Translation")) {
+                                Text("All").tag(0)
+                                Text("Translated").tag(1)
+                                Text("Untranslated").tag(2)
+                            }
+                            Picker(selection: $stringsModel.filter.translationQuality, label: Text("Reverse")) {
+                                Text("All").tag(0)
+                                Text("Missing").tag(1)
+                                Text("Different").tag(2)
+                                Text("Similiar").tag(3)
+                                Text("Exact").tag(4)
+                            }
+
                             Toggle("Modified", isOn: $stringsModel.filter.modified)
                             Toggle("Needs Review", isOn: $stringsModel.filter.needsReview)
                             Toggle("Needs Work", isOn: $stringsModel.filter.needsWork)
@@ -258,8 +285,6 @@ struct ContentView: View {
         Button("Auto Translate") {
             Task {
                 await stringsModel.translate(ids: itemIDs)
-                
-                stringsModel.showTranslateDoneAlert = true
             }
         }
         Button("Reverse Translate") {
@@ -354,6 +379,14 @@ struct ContentView: View {
         default:
             return .primary
         }
+    }
+    
+    private func isReverseTranslationExact(_ item: LocalizeItem) -> Bool {
+        return item.reverseTranslation == item.sourceString
+    }
+    
+    private func isReverseTranslationMatch(_ item: LocalizeItem) -> Bool {
+        return item.reverseTranslation?.uppercased() == item.sourceString.uppercased()
     }
 }
 

@@ -11,7 +11,8 @@ import AppKit
 
 struct Filter {
     var new: Bool = false
-    var translated: Bool = false
+    var translated: Int = 0
+    var translationQuality: Int = 0
     var modified: Bool = false
     var needsReview: Bool = false
     var needsWork: Bool = false
@@ -20,7 +21,8 @@ struct Filter {
     
     mutating func reset() {
         new = false
-        translated = false
+        translated = 0
+        translationQuality = 0
         modified = false
         needsReview = false
         needsWork = false
@@ -29,7 +31,7 @@ struct Filter {
     }
     
     var hasOn: Bool {
-        return new || translated || modified || needsReview || translateLater || needsWork || sourceEqualTranslation
+        return new || translated > 0 || translationQuality > 0 || modified || needsReview || translateLater || needsWork || sourceEqualTranslation
     }
 }
 
@@ -294,7 +296,7 @@ class XCStringsModel {
         return xcstrings
     }
     
-    private func reloadData() {
+    func reloadData() {
         // TODO: filter sub items
         
 //        print(#function, currentLanguage)
@@ -318,10 +320,33 @@ class XCStringsModel {
                 }
             }
 
-            if filter.translated == true {
-                if $0.contains(matching: { item in item.translation == nil }) == true {
+            switch filter.translated {
+            case 1:
+                if $0.contains(matching: { item in item.translation == nil }) {
                     return false
                 }
+            case 2:
+                if $0.contains(matching: { item in item.translation != nil }) {
+                    return false
+                }
+            default:
+                break
+            }
+            
+            switch filter.translationQuality {
+            case 1:
+                return $0.reverseTranslation == nil
+            case 2:
+                return $0.reverseTranslation != nil
+                && $0.translationStatus == .different
+            case 3:
+                return $0.reverseTranslation != nil
+                && $0.translationStatus == .similar
+            case 4:
+                return $0.reverseTranslation != nil
+                && $0.translationStatus == .exact
+            default:
+                break
             }
 
             if filter.modified == true {

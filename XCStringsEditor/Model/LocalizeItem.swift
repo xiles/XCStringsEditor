@@ -75,6 +75,21 @@ class LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
 
     var isModified: Bool = false
 //    var isEditing: Bool = false
+
+    var translationStatus: TranslationStatus {
+        guard let _ = translation else { return .missingTranslation }
+        guard let reverseTranslation = reverseTranslation else { return .missingReverse }
+        
+        if sourceString == reverseTranslation {
+            return .exact
+        }
+        
+        if sourceString.uppercased() == reverseTranslation.uppercased() {
+            return .similar
+        }
+        
+        return .different
+    }
     
     var children: [LocalizeItem]?
     
