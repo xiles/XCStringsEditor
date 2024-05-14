@@ -46,7 +46,7 @@ struct ContentView: View {
 //        logger.debug("init ContentView")
 //        #endif
 //    }
-    
+        
     var body: some View {
         @Bindable var stringsModel = stringsModel
         
@@ -54,25 +54,13 @@ struct ContentView: View {
             Table(selection: $stringsModel.selected, sortOrder: $stringsModel.sortOrder) {
                 // Key
                 TableColumn("Key", value: \.key) { item in
-                    HStack {
-                        Circle()
-                            .fill(.blue)
-                            .frame(width: 6, height: 6)
-                            .opacity(item.isModified ? 1.0 : 0.0)
-                        Text(item.key)
-                            .lineLimit(nil)
-                            .multilineTextAlignment(.leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .foregroundStyle(item.translateLater ? .secondary : (item.needsWork && item.children != nil ? Color.orange : .primary))
-                    }
+                    keyColumnView(item: item)
                 }
+                
+
                 // Source
                 TableColumn("Default Localization (\(stringsModel.baseLanguage.code))") { item in
-                    Text(verbatim: "\(item.sourceString)")
-                        .lineLimit(nil)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .foregroundStyle(item.translateLater ? .secondary : .primary)
+                    sourceColumnView(item: item)
                 }
 
                 // Translation
@@ -116,29 +104,12 @@ struct ContentView: View {
                 
                 // Reverse Translation
                 TableColumn("Reverse Translation") { item in
-                    if isReverseTranslationMatch(item) {
-                        let image = Image(systemName: isReverseTranslationExact(item) ? "checkmark.circle.fill" : "checkmark.circle")
-                        (
-                            Text(image)
-                                .foregroundStyle(.green) +
-                            Text(verbatim: " \(item.reverseTranslation ?? "")")
-                        )
-                        .lineLimit(nil)
-                        .fixedSize(horizontal: false, vertical: true)
-                    } else {
-                        Text(verbatim: item.reverseTranslation ?? "")
-                            .lineLimit(nil)
-                            .multilineTextAlignment(.leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
+                    reverseTranslationColumnView(item: item)
                 }
+                
                 // Comment
                 TableColumn("Comment") { item in
-                    Text("\(item.comment ?? "")")
-                        .foregroundStyle(.secondary)
-                        .lineLimit(nil)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
+                    commentColumnView(comment: item.comment ?? "")
                 }
                 // State
                 TableColumn("State", value: \.state) { item in
@@ -275,6 +246,56 @@ struct ContentView: View {
         .modifier(ActivityIndicatorModifier(isPresented: $stringsModel.isLoading))
     }
     
+    private func keyColumnView(item: LocalizeItem) -> some View {
+        HStack {
+            Circle()
+                .fill(.blue)
+                .frame(width: 6, height: 6)
+                .opacity(item.isModified ? 1.0 : 0.0)
+            Text(item.key)
+                .lineLimit(nil)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .foregroundStyle(item.translateLater ? .secondary : (item.needsWork && item.children != nil ? Color.orange : .primary))
+        }
+    }
+    
+    private func sourceColumnView(item: LocalizeItem) -> some View {
+        Text(verbatim: "\(item.sourceString)")
+            .lineLimit(nil)
+            .multilineTextAlignment(.leading)
+            .fixedSize(horizontal: false, vertical: true)
+            .foregroundStyle(item.translateLater ? .secondary : .primary)
+    }
+    
+    @ViewBuilder
+    private func reverseTranslationColumnView(item: LocalizeItem) -> some View {
+        if isReverseTranslationMatch(item) {
+            let image = Image(systemName: isReverseTranslationExact(item) ? "checkmark.circle.fill" : "checkmark.circle")
+            
+            (
+                Text(image)
+                    .foregroundStyle(.green) +
+                Text(verbatim: " \(item.reverseTranslation ?? "")")
+            )
+            .lineLimit(nil)
+            .fixedSize(horizontal: false, vertical: true)
+        } else {
+            Text(verbatim: item.reverseTranslation ?? "")
+                .lineLimit(nil)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+    
+    private func commentColumnView(comment: String) -> some View {
+        Text(comment)
+            .foregroundStyle(.secondary)
+            .lineLimit(nil)
+            .multilineTextAlignment(.leading)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
     @ViewBuilder
     private func rowContextMenu(for item: LocalizeItem) -> some View {
         let itemIDs = contextMenuItemIDs(itemID: item.id)
