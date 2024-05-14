@@ -208,6 +208,10 @@ class XCStringsModel {
             try data.write(to: outputURL, options: [.atomic])
             isModified = false
             
+            clearModifiedMark()
+            
+            reloadData()
+            
         } catch {
             print("Save failed", error)
         }
@@ -864,6 +868,23 @@ class XCStringsModel {
         if let settingsFileURL {
             settings.save(to: settingsFileURL)
         }
+    }
+    
+    func clearModifiedMark() {
+        let items = self.allLocalizeItems
+        
+        func removeModifiedMark(items: [LocalizeItem]) {
+            for item in items {
+                if item.isModified {
+                    item.isModified = false
+                }
+                // children
+                if let children = item.children {
+                    removeModifiedMark(items: children)
+                }
+            }
+        }
+        removeModifiedMark(items: items)
     }
 
     
