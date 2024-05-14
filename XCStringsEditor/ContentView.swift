@@ -117,16 +117,13 @@ struct ContentView: View {
                 // Reverse Translation
                 TableColumn("Reverse Translation") { item in
                     if isReverseTranslationMatch(item) {
+                        let image = Image(systemName: isReverseTranslationExact(item) ? "checkmark.circle.fill" : "checkmark.circle")
                         (
-                            Text(
-                                Image(systemName: isReverseTranslationExact(item) ? "checkmark.circle.fill" : "checkmark.circle")
-                            )
-                            .foregroundStyle(.green)
-                            + Text(" ") +
-                            Text(verbatim: item.reverseTranslation ?? "")
+                            Text(image)
+                                .foregroundStyle(.green) +
+                            Text(verbatim: " \(item.reverseTranslation ?? "")")
                         )
                         .lineLimit(nil)
-                        .multilineTextAlignment(.leading)
                         .fixedSize(horizontal: false, vertical: true)
                     } else {
                         Text(verbatim: item.reverseTranslation ?? "")
