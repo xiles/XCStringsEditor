@@ -157,13 +157,13 @@ struct XCStringEditorApp: App {
                         await stringsModel.translate()
                     }
                 }
-                .keyboardShortcut("t", modifiers: [.command]) // Cmd + T
+                .keyboardShortcut("t", modifiers: [.command, .option]) // Cmd + Option + T
                 .disabled(stringsModel.selected.isEmpty)
 
                 Button("Reverse Translate") {
                     stringsModel.reverseTranslate()
                 }
-                .keyboardShortcut("t", modifiers: [.shift, .command]) // Cmd + Shift + T
+                .keyboardShortcut("t", modifiers: [.shift, .option, .command]) // Cmd + Option + Shift + T
                 .disabled(stringsModel.selected.isEmpty)
 
                 Button("Check Translation") {
