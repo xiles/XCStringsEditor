@@ -141,60 +141,66 @@ struct ContentView: View {
                 stringsModel.sort(using: newValue)
             })
             .toolbar {
+                ToolbarItemGroup(placement: .navigation) {
+                    if stringsModel.isModified {
+                        Circle()
+                            .fill(.blue)
+                            .frame(width: 6, height: 6)
+                    }
+                }
+                    
                 if stringsModel.languages.isEmpty == false {
-                    ToolbarItem(placement: .secondaryAction) {
+                    ToolbarItemGroup(placement: .primaryAction) {
+                        Spacer()
+                        
                         Picker("Language", selection: $stringsModel.currentLanguage) {
                             ForEach(stringsModel.languages) { language in
                                 Text(language.localizedName)
                             }
                         }
-                    }
-                    ToolbarItem(placement: .secondaryAction) {
-                        Button(action: save) {
-                            Label("Save", systemImage: "square.and.arrow.down")
-                        }
-                    }
-                }
-                    
-                ToolbarItem(placement: .confirmationAction) {
-                    Menu {
-                        Button {
-                            stringsModel.filter.reset()
-                        } label: {
-                            if stringsModel.filter.hasOn {
-                                Text("All Items")
-                            } else {
-                                Label("All Item(s)", systemImage: "checkmark")
-                            }
-                        }
-                        Divider()
-                        Group {
-                            Toggle("New", isOn: $stringsModel.filter.new)
-//                            Toggle("Translated", isOn: $stringsModel.filter.translated)
-                            Picker(selection: $stringsModel.filter.translated, label: Text("Translation")) {
-                                Text("All").tag(0)
-                                Text("Translated").tag(1)
-                                Text("Untranslated").tag(2)
-                            }
-                            Picker(selection: $stringsModel.filter.translationQuality, label: Text("Reverse")) {
-                                Text("All").tag(0)
-                                Text("Missing").tag(1)
-                                Text("Different").tag(2)
-                                Text("Similiar").tag(3)
-                                Text("Exact").tag(4)
-                            }
+                        .frame(minWidth: 160)
 
-                            Toggle("Modified", isOn: $stringsModel.filter.modified)
-                            Toggle("Needs Review", isOn: $stringsModel.filter.needsReview)
-                            Toggle("Needs Work", isOn: $stringsModel.filter.needsWork)
-                            Toggle("Translate Later", isOn: $stringsModel.filter.translateLater)
-                            Toggle("Source = Translation", isOn: $stringsModel.filter.sourceEqualTranslation)
+                        Spacer()
+                                                
+                        Menu {
+                            Button {
+                                stringsModel.filter.reset()
+                            } label: {
+                                if stringsModel.filter.hasOn {
+                                    Text("All Items")
+                                } else {
+                                    Label("All Item(s)", systemImage: "checkmark")
+                                }
+                            }
+                            Divider()
+                            Group {
+                                Toggle("New", isOn: $stringsModel.filter.new)
+    //                            Toggle("Translated", isOn: $stringsModel.filter.translated)
+                                Picker(selection: $stringsModel.filter.translated, label: Text("Translation")) {
+                                    Text("All").tag(0)
+                                    Text("Translated").tag(1)
+                                    Text("Untranslated").tag(2)
+                                }
+                                Picker(selection: $stringsModel.filter.translationQuality, label: Text("Reverse")) {
+                                    Text("All").tag(0)
+                                    Text("Missing").tag(1)
+                                    Text("Different").tag(2)
+                                    Text("Similiar").tag(3)
+                                    Text("Exact").tag(4)
+                                }
+
+                                Toggle("Modified", isOn: $stringsModel.filter.modified)
+                                Toggle("Needs Review", isOn: $stringsModel.filter.needsReview)
+                                Toggle("Needs Work", isOn: $stringsModel.filter.needsWork)
+                                Toggle("Translate Later", isOn: $stringsModel.filter.translateLater)
+                                Toggle("Source = Translation", isOn: $stringsModel.filter.sourceEqualTranslation)
+                            }
+                        } label: {
+                            Label("Filter", systemImage: stringsModel.filter.hasOn ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
                         }
-                    } label: {
-                        Label("Filter", systemImage: stringsModel.filter.hasOn ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
+                        .menuIndicator(.hidden)
+
                     }
-                    .menuIndicator(.hidden)
-                }
             }
             .toolbarRole(.editor)
             .searchable(text: $stringsModel.searchText)
