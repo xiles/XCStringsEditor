@@ -159,9 +159,9 @@ struct ContentView: View {
                             }
                         }
                         .frame(minWidth: 160)
-
+                        
                         Spacer()
-                                                
+                        
                         Menu {
                             Button {
                                 stringsModel.filter.reset()
@@ -175,7 +175,7 @@ struct ContentView: View {
                             Divider()
                             Group {
                                 Toggle("New", isOn: $stringsModel.filter.new)
-    //                            Toggle("Translated", isOn: $stringsModel.filter.translated)
+                                //                            Toggle("Translated", isOn: $stringsModel.filter.translated)
                                 Picker(selection: $stringsModel.filter.translated, label: Text("Translation")) {
                                     Text("All").tag(0)
                                     Text("Translated").tag(1)
@@ -188,7 +188,7 @@ struct ContentView: View {
                                     Text("Similiar").tag(3)
                                     Text("Exact").tag(4)
                                 }
-
+                                
                                 Toggle("Modified", isOn: $stringsModel.filter.modified)
                                 Toggle("Needs Review", isOn: $stringsModel.filter.needsReview)
                                 Toggle("Needs Work", isOn: $stringsModel.filter.needsWork)
@@ -199,8 +199,9 @@ struct ContentView: View {
                             Label("Filter", systemImage: stringsModel.filter.hasOn ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
                         }
                         .menuIndicator(.hidden)
-
                     }
+                }
+                    
             }
             .toolbarRole(.editor)
             .searchable(text: $stringsModel.searchText)
