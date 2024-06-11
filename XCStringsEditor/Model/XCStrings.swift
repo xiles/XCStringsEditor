@@ -322,7 +322,9 @@ struct XCString: Codable {
         if let localizationsDict = try values.decodeIfPresent([String: Localization].self, forKey: .localizations) {
             var localizations = [Language: Localization]()
             for (key, localization) in localizationsDict {
-                localizations[Language(code: key)!] = localization
+                if let key = Language(code: key) {
+                    localizations[key] = localization
+                }
             }
             
             self.localizations = localizations
