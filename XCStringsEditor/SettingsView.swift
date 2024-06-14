@@ -8,28 +8,22 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @AppStorage("GoogleTranslateAPIKey") var googleTranslateAPIKey = ""
-    @AppStorage("DeeplAPIKey") var deeplAPIKey = ""
-    @AppStorage("TranslateService") var translateService: TranslateService = .google
     
-    @State private var translateServiceOption: TranslateService = .google
-
+    @AppStorage(UserDefaults.Keys.googleTranslateAPIKey) var googleTranslateAPIKey = ""
+    @AppStorage(UserDefaults.Keys.deeplAPIKey) var deeplAPIKey = ""
+    @AppStorage(UserDefaults.Keys.translationService) var translateService: TranslateService = .google
+    
     var body: some View {
         Form {
-            Picker("Translate Service", selection: $translateServiceOption) {
+            Picker("Translate Service", selection: $translateService) {
                 ForEach(TranslateService.allCases) { option in
                     Text(String(describing: option))
+                        .tag(option)
                 }
             }
             TextField("Google Translate API Key", text: $googleTranslateAPIKey)
             TextField("DeepL API Key", text: $deeplAPIKey)
         }
-        .onAppear {
-            translateServiceOption = translateService
-        }
-        .onChange(of: translateServiceOption, {
-            translateService = translateServiceOption
-        })
         .padding()
         .frame(width: 500, height: 250)
     }

@@ -28,6 +28,7 @@
 		19ABC3D82B5BA34C009568D2 /* XCStringsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19ABC3D72B5BA34C009568D2 /* XCStringsModel.swift */; };
 		19ABC3DA2B5C0E87009568D2 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 19ABC3D92B5C0E87009568D2 /* Localizable.xcstrings */; };
 		19CE60682BF3A7C600CD190E /* TranslationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19CE60672BF3A7C500CD190E /* TranslationStatus.swift */; };
+		C0039DCC2C1CE2E100A93A29 /* UserDefaults+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0039DCB2C1CE2E100A93A29 /* UserDefaults+Keys.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		19ABC3D72B5BA34C009568D2 /* XCStringsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCStringsModel.swift; sourceTree = "<group>"; };
 		19ABC3D92B5C0E87009568D2 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		19CE60672BF3A7C500CD190E /* TranslationStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TranslationStatus.swift; path = XCStringsEditor/TranslationStatus.swift; sourceTree = SOURCE_ROOT; };
+		C0039DCB2C1CE2E100A93A29 /* UserDefaults+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Keys.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +122,7 @@
 		19ABC3C52B5BA17C009568D2 /* XCStringsEditor */ = {
 			isa = PBXGroup;
 			children = (
+				C0039DCA2C1CE2D500A93A29 /* Extensions */,
 				196D574E2B6FB63A00B2F265 /* Helper */,
 				196FC3D02B6087140066D068 /* Model */,
 				19ABC3C62B5BA17C009568D2 /* XCStringEditorApp.swift */,
@@ -142,6 +145,14 @@
 				19ABC3CF2B5BA17D009568D2 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		C0039DCA2C1CE2D500A93A29 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				C0039DCB2C1CE2E100A93A29 /* UserDefaults+Keys.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -230,6 +241,7 @@
 				196D574B2B6F72B600B2F265 /* LocalizeItem.swift in Sources */,
 				1983DE222BEBBD2B006D8815 /* TranslateService.swift in Sources */,
 				1983DE292BEBC293006D8815 /* XCStringsModel+GoogleTranslate.swift in Sources */,
+				C0039DCC2C1CE2E100A93A29 /* UserDefaults+Keys.swift in Sources */,
 				196FC3D22B6087220066D068 /* XCStrings.swift in Sources */,
 				197E64642B74F8CD008251BE /* Language.swift in Sources */,
 				1983DE2B2BEBC2A9006D8815 /* XCStringsModel+DeepL.swift in Sources */,

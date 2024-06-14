@@ -99,16 +99,12 @@ class XCStringsModel {
     var isLoading: Bool = false
 
     init() {
-        if let apiKey = UserDefaults.standard.string(forKey: "GoogleTranslateAPIKey") {
-            GoogleTranslate.shared.configure(apiKey: apiKey)
-        }
-        if let apiKey = UserDefaults.standard.string(forKey: "DeeplAPIKey") {
-            DeepL.shared.configure(apiKey: apiKey)
-        }
-
+        GoogleTranslate.shared.configure(apiKey: UserDefaults.standard.googleTranslateAPIKey)
+        DeepL.shared.configure(apiKey: UserDefaults.standard.deeplAPIKey)
+        
         translateLaterItemsHidden = UserDefaults.standard.bool(forKey: "TranslateLaterItemsHidden")
         staleItemsHidden = UserDefaults.standard.bool(forKey: "StaleItemsHidden")
-
+        
 //        searchText.publisher
 //            .debounce(for: 0.2, scheduler: RunLoop.main)
 //            .removeDuplicates()
@@ -676,17 +672,11 @@ class XCStringsModel {
     func translate(ids: Set<LocalizeItem.ID>? = nil) async {
         isLoading = true
         
-        let translateService = TranslateService(rawValue: UserDefaults.standard.string(forKey: "TranslateService") ?? "")
-        
-        switch translateService {
+        switch UserDefaults.standard.translationService {
         case .google:
             await translateByGoogle(ids: ids)
-            
         case .deepL:
             await translateByDeepL(ids: ids)
-            
-        default:
-            showAPIKeyAlert = true
         }
 //        reloadData()
         
@@ -695,16 +685,12 @@ class XCStringsModel {
     
     func reverseTranslate(ids: Set<LocalizeItem.ID>? = nil) {
         isLoading = true
-
-        let translateService = TranslateService(rawValue: UserDefaults.standard.string(forKey: "TranslateService") ?? "")
         
-        switch translateService {
+        switch UserDefaults.standard.translationService {
         case .google:
             reverseTranslateByGoogle(ids: ids)
         case .deepL:
             reverseTranslateByDeepL(ids: ids)
-        default:
-            showAPIKeyAlert = true
         }
 //        reloadData()
         
