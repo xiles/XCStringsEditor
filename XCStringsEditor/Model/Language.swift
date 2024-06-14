@@ -19,8 +19,9 @@ enum Language: String, Hashable, Identifiable, CustomStringConvertible {
     case dutch = "nl"
     case english = "en"
     case englishAustralia = "en-AU"
-    case englishIndia = "en-IN"
     case englishGB = "en-GB"
+    case englishIndia = "en-IN"
+    case englishUS = "en-US"
     case finnish = "fi"
     case french = "fr"
     case frenchCanada = "fr-CA"
@@ -85,10 +86,12 @@ enum Language: String, Hashable, Identifiable, CustomStringConvertible {
             return String(localized: "Dutch")
         case .englishAustralia:
             return String(localized: "English (Australia)")
+        case .englishGB:
+            return String(localized: "English (United Kingdom)")
         case .englishIndia:
             return String(localized: "English (India)")
-        case .englishGB:
-            return String(localized: "English (United Kingdom")
+        case .englishUS:
+            return String(localized: "English (US)")
         case .finnish:
             return String(localized: "Finnish")
         case .frenchCanada:
