@@ -20,5 +20,5 @@ enum TranslateService: String, CaseIterable, Identifiable, CustomStringConvertib
           case .deepL:
             return "DeepL"
         }
-    }    
+    }
 }
