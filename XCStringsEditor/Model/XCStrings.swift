@@ -82,6 +82,7 @@ struct XCString: Codable {
         case none
         case stale
         case manual
+        case extractedWithValue = "extracted_with_value"
     }
     enum VariationKind: CodingKey {
         case plural
