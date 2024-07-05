@@ -189,6 +189,9 @@
     "Different" : {
 
     },
+    "Discard and Open" : {
+
+    },
     "Discard Changes" : {
 
     },
@@ -397,6 +400,9 @@
     "Save" : {
 
     },
+    "Save and Open" : {
+
+    },
     "Show Stale Items" : {
 
     },
@@ -463,10 +469,16 @@
     "Unmark Translate Later" : {
 
     },
+    "Unsaved Changes Detected" : {
+
+    },
     "Untranslated" : {
 
     },
     "Vietnamese" : {
+
+    },
+    "You have unsaved changes. Do you want to save your changes before opening a new file?" : {
 
     },
     "Zero" : {

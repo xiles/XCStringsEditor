@@ -71,6 +71,8 @@ class XCStringsModel {
     var forceClose: Bool = false
     var canClose: Bool { forceClose || isModified == false }
 
+    var openingFileURL: URL?
+    
 //    private var debouncedSearchText: String = ""
 //    private var cancellables = Set<AnyCancellable>()
     var filter: Filter = Filter() {

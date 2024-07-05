@@ -17,10 +17,20 @@ struct XCStringEditorApp: App {
     @Environment(\.controlActiveState) private var controlActiveState
     
     @State private var stringsModel: XCStringsModel = XCStringsModel()
+    @State private var isDiscardConfirmVisible: Bool = false
     
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .background(FileDropView { url in
+                    print("drop: \(url)")
+                    if stringsModel.isModified == false {
+                        stringsModel.load(file: url)
+                    } else {
+                        stringsModel.openingFileURL = url
+                        isDiscardConfirmVisible = true
+                    }
+                })
                 .environment(stringsModel)
                 .environment(appDelegate.windowDelegate)
                 .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
@@ -28,6 +38,28 @@ struct XCStringEditorApp: App {
                         stringsModel.settings.save(to: url)
                     }
                 }
+                .confirmationDialog("Unsaved Changes Detected", isPresented: $isDiscardConfirmVisible) {
+                    Button("Save and Open", role: .none) {
+                        guard let url = stringsModel.openingFileURL else {
+                            return
+                        }
+                        stringsModel.save()
+                        stringsModel.load(file: url)
+                    }
+                    
+                    Button("Discard and Open", role: .destructive) {
+                        guard let url = stringsModel.openingFileURL else {
+                            return
+                        }
+                        stringsModel.load(file: url)
+                    }
+                    
+                    Button("Cancel", role: .cancel) {
+                    }
+                } message: {
+                    Text("You have unsaved changes. Do you want to save your changes before opening a new file?")
+                }
+
         }
         .commands {
             CommandGroup(replacing: .newItem) {
