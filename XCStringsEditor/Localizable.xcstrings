@@ -207,7 +207,7 @@
     "English (India)" : {
 
     },
-    "English (United Kingdom" : {
+    "English (United Kingdom)" : {
 
     },
     "English (US)" : {
@@ -476,6 +476,9 @@
 
     },
     "Vietnamese" : {
+
+    },
+    "XCStringsEditor" : {
 
     },
     "You have unsaved changes. Do you want to save your changes before opening a new file?" : {
