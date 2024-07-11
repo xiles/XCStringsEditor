@@ -20,16 +20,10 @@ struct XCStringEditorApp: App {
     @State private var isDiscardConfirmVisible: Bool = false
     
     var body: some Scene {
-        WindowGroup {
+        Window("XCStringsEditor", id: "main") {
             ContentView()
                 .background(FileDropView { url in
-                    print("drop: \(url)")
-                    if stringsModel.isModified == false {
-                        stringsModel.load(file: url)
-                    } else {
-                        stringsModel.openingFileURL = url
-                        isDiscardConfirmVisible = true
-                    }
+                    openURL(url)
                 })
                 .environment(stringsModel)
                 .environment(appDelegate.windowDelegate)
@@ -38,6 +32,13 @@ struct XCStringEditorApp: App {
                         stringsModel.settings.save(to: url)
                     }
                 }
+                .onReceive(NotificationCenter.default.publisher(for: .receivedOpenURLsNotification), perform: { newValue in
+                    guard let urls = newValue.userInfo?["urls"] as? [URL], let url = urls.first else {
+                        return
+                    }
+                    
+                    openURL(url)
+                })
                 .confirmationDialog("Unsaved Changes Detected", isPresented: $isDiscardConfirmVisible) {
                     Button("Save and Open", role: .none) {
                         guard let url = stringsModel.openingFileURL else {
@@ -243,19 +244,17 @@ extension XCStringEditorApp {
         panel.canChooseDirectories = false
         if panel.runModal() == .OK {
             if let fileURL = panel.url {
-                stringsModel.load(file: fileURL)
-                
-                // Update recent files
-                var recents = UserDefaults.standard.array(forKey: "RecentFiles") as? [String] ?? [String]()
-                if let index = recents.firstIndex(where: { $0 == fileURL.path(percentEncoded: false) }) {
-                    recents.remove(at: index)
-                }
-                recents.append(fileURL.path(percentEncoded: false))
-                if recents.count > 15 {
-                    recents.removeFirst(recents.count - 15)
-                }
-                UserDefaults.standard.set(recents, forKey: "RecentFiles")
+                openURL(fileURL)
             }
+        }
+    }
+
+    private func openURL(_ url: URL) {
+        if stringsModel.isModified == false {
+            stringsModel.load(file: url)
+        } else {
+            stringsModel.openingFileURL = url
+            isDiscardConfirmVisible = true
         }
     }
 }

@@ -35,6 +35,7 @@
 /* Begin PBXFileReference section */
 		190A009D2B63FCCF009FBAED /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1944EC4A2C36EDDC0010AB7C /* FileDropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDropView.swift; sourceTree = "<group>"; };
+		1944EC4C2C36EFF80010AB7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1944ECF42B5E8D46002F99C3 /* GoogleTranslate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleTranslate.swift; sourceTree = "<group>"; };
 		196D574A2B6F72B600B2F265 /* LocalizeItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizeItem.swift; sourceTree = "<group>"; };
 		196D574C2B6FB0C700B2F265 /* ItemStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemStateView.swift; sourceTree = "<group>"; };
@@ -143,6 +144,7 @@
 				197E645F2B7461E6008251BE /* WindowDelegate.swift */,
 				197E64612B746237008251BE /* AppDelegate.swift */,
 				19ABC3CC2B5BA17D009568D2 /* Assets.xcassets */,
+				1944EC4C2C36EFF80010AB7C /* Info.plist */,
 				19ABC3D12B5BA17D009568D2 /* XCStringEditor.entitlements */,
 				19ABC3D92B5C0E87009568D2 /* Localizable.xcstrings */,
 				19ABC3CE2B5BA17D009568D2 /* Preview Content */,
@@ -397,6 +399,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = XCStringsEditor/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = XCStringsEditor;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2024 JungHoon Noh (xiles)";
@@ -428,6 +431,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = XCStringsEditor/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = XCStringsEditor;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2024 JungHoon Noh (xiles)";

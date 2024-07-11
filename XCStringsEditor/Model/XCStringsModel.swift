@@ -159,6 +159,18 @@ class XCStringsModel {
             }
             isModified = false
             
+            
+            // Update recent files
+            var recents = UserDefaults.standard.array(forKey: "RecentFiles") as? [String] ?? [String]()
+            if let index = recents.firstIndex(where: { $0 == file.path(percentEncoded: false) }) {
+                recents.remove(at: index)
+            }
+            recents.append(file.path(percentEncoded: false))
+            if recents.count > 15 {
+                recents.removeFirst(recents.count - 15)
+            }
+            UserDefaults.standard.set(recents, forKey: "RecentFiles")
+
         } catch {
             print("Failed to load", error)
         }
