@@ -28,9 +28,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        if windowDelegate.isOpening {
-            return false
-        }
         return true
     }
     
