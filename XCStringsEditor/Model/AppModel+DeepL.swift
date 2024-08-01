@@ -1,5 +1,5 @@
 //
-//  XCStringsModel_DeepL.swift
+//  AppModel_DeepL.swift
 //  XCStringsEditor
 //
 //  Created by Michal on 07.05.2024.
@@ -8,7 +8,7 @@
 import Foundation
 
 //MARK: - DeepL
-extension XCStringsModel {
+extension AppModel {
     
     func translateByDeepL(ids: Set<LocalizeItem.ID>? = nil) async {
         guard DeepL.shared.isAvailable == true else {

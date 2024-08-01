@@ -36,7 +36,7 @@ struct Filter {
 }
 
 @Observable
-class XCStringsModel {
+class AppModel {
 
     private(set) var fileURL: URL?
     private(set) var title: String?

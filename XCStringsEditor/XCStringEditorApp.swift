@@ -16,7 +16,7 @@ struct XCStringEditorApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Environment(\.controlActiveState) private var controlActiveState
     
-    @State private var stringsModel: XCStringsModel = XCStringsModel()
+    @State private var appModel: AppModel = AppModel()
     @State private var isDiscardConfirmVisible: Bool = false
     
     var body: some Scene {
@@ -25,11 +25,11 @@ struct XCStringEditorApp: App {
                 .background(FileDropView { url in
                     openURL(url)
                 })
-                .environment(stringsModel)
+                .environment(appModel)
                 .environment(appDelegate.windowDelegate)
                 .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
-                    if let url = stringsModel.settingsFileURL {
-                        stringsModel.settings.save(to: url)
+                    if let url = appModel.settingsFileURL {
+                        appModel.settings.save(to: url)
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: .receivedOpenURLsNotification), perform: { newValue in
@@ -41,18 +41,18 @@ struct XCStringEditorApp: App {
                 })
                 .confirmationDialog("Unsaved Changes Detected", isPresented: $isDiscardConfirmVisible) {
                     Button("Save and Open", role: .none) {
-                        guard let url = stringsModel.openingFileURL else {
+                        guard let url = appModel.openingFileURL else {
                             return
                         }
-                        stringsModel.save()
-                        stringsModel.load(file: url)
+                        appModel.save()
+                        appModel.load(file: url)
                     }
                     
                     Button("Discard and Open", role: .destructive) {
-                        guard let url = stringsModel.openingFileURL else {
+                        guard let url = appModel.openingFileURL else {
                             return
                         }
-                        stringsModel.load(file: url)
+                        appModel.load(file: url)
                     }
                     
                     Button("Cancel", role: .cancel) {
@@ -75,7 +75,7 @@ struct XCStringEditorApp: App {
                     if recents.isEmpty == false {
                         ForEach(recents.reversed(), id: \.self) { url in
                             Button {
-                                stringsModel.load(file: url)
+                                appModel.load(file: url)
                                 
                                 var recents = UserDefaults.standard.array(forKey: "RecentFiles") as? [String] ?? [String]()
                                 if let index = recents.firstIndex(where: { $0 == url.path(percentEncoded: false) }) {
@@ -100,132 +100,132 @@ struct XCStringEditorApp: App {
                 Divider()
                 
                 Button("Save") {
-                    stringsModel.save()
+                    appModel.save()
                 }
                 .keyboardShortcut("s", modifiers: [.command]) // Cmd + S
-                .disabled(stringsModel.fileURL == nil)
+                .disabled(appModel.fileURL == nil)
             }
             CommandGroup(after: .pasteboard) {
                 Button("Copy Source Text") {
-                    stringsModel.copySourceText()
+                    appModel.copySourceText()
                 }
                 .keyboardShortcut("c", modifiers: [.command, .control]) // Cmd + Control + C
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
                 
                 Button("Copy Translation") {
-                    stringsModel.copyTranslationText()
+                    appModel.copyTranslationText()
                 }
                 .keyboardShortcut("c", modifiers: [.command, .option]) // Cmd + Option + C
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
 
                 Button("Copy Source and Translation Text") {
-                    stringsModel.copySourceAndTranslationText()
+                    appModel.copySourceAndTranslationText()
                 }
                 .keyboardShortcut("c", modifiers: [.command, .option, .control]) // Cmd + Option + Control + C
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
 
                 Divider() // ------------------------
                 
                 Button("Clear Translation") {
-                    stringsModel.clearTranslation()
+                    appModel.clearTranslation()
                 }
                 .keyboardShortcut("e", modifiers: [.command]) // Cmd + E
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
                 
                 Button("Copy from Source Text") {
-                    stringsModel.copyFromSourceText()
+                    appModel.copyFromSourceText()
                 }
                 .keyboardShortcut("d", modifiers: [.command]) // Cmd + D
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
                 
                 Divider() // ------------------------
                 
                 Button("Mark for Review") {
-                    stringsModel.markNeedsReview()
+                    appModel.markNeedsReview()
                 }
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
                 Button("Mark as Reviewed") {
-                    stringsModel.reviewed()
+                    appModel.reviewed()
                 }
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
 
-                if stringsModel.selected.isEmpty == false && stringsModel.items(with: Array(stringsModel.selected)).allSatisfy({ $0.shouldTranslate == false }) {
+                if appModel.selected.isEmpty == false && appModel.items(with: Array(appModel.selected)).allSatisfy({ $0.shouldTranslate == false }) {
                     Button("Mark for Translation") {
-                        stringsModel.setShouldTranslate(true)
+                        appModel.setShouldTranslate(true)
                     }
                 } else {
                     Button("Mark as \"Don't Translate\"") {
-                        stringsModel.setShouldTranslate(false)
+                        appModel.setShouldTranslate(false)
                     }
-                    .disabled(stringsModel.selected.isEmpty)
+                    .disabled(appModel.selected.isEmpty)
                 }
                                 
                 Divider()
                 
                 Button("Mark for Translate Later") {
-                    stringsModel.markTranslateLater(value: true)
+                    appModel.markTranslateLater(value: true)
                 }
                 .keyboardShortcut("l", modifiers: [.command]) // Cmd + L
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
                 
                 Button("Unmark Translate Later") {
-                    stringsModel.markTranslateLater(value: false)
+                    appModel.markTranslateLater(value: false)
                 }
                 .keyboardShortcut("l", modifiers: [.shift, .command]) // Cmd + Shift + L
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
                 
                 Button("Mark for Needs Work") {
-                    stringsModel.markNeedsWork(value: true)
+                    appModel.markNeedsWork(value: true)
                 }
                 .keyboardShortcut("w", modifiers: [.control, .command]) // Cmd + Control + W
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
 
                 Button("Mark for Needs Work for All Languages") {
-                    stringsModel.markNeedsWork(value: true, allLanguages: true)
+                    appModel.markNeedsWork(value: true, allLanguages: true)
                 }
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
                 .keyboardShortcut("w", modifiers: [.control, .option, .command]) // Cmd + Option + Control + W
                 
                 Button("Clear Needs Work for All Languages") {
-                    stringsModel.clearNeedsWork(allLanguages: true)
+                    appModel.clearNeedsWork(allLanguages: true)
                 }
 
                 Button("Unmark Needs Work") {
-                    stringsModel.markNeedsWork(value: false)
+                    appModel.markNeedsWork(value: false)
                 }
                 .keyboardShortcut("w", modifiers: [.control, .shift, .command]) // Cmd + Shift + Control + W
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
 
                 Divider() // ------------------------
                 
                 Button("Auto Translate") {
                     Task {
-                        await stringsModel.translate()
+                        await appModel.translate()
                     }
                 }
                 .keyboardShortcut("t", modifiers: [.command, .option]) // Cmd + Option + T
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
 
                 Button("Reverse Translate") {
-                    stringsModel.reverseTranslate()
+                    appModel.reverseTranslate()
                 }
                 .keyboardShortcut("t", modifiers: [.shift, .option, .command]) // Cmd + Option + Shift + T
-                .disabled(stringsModel.selected.isEmpty)
+                .disabled(appModel.selected.isEmpty)
 
                 Button("Check Translation") {
-                    stringsModel.detectLanguage()
+                    appModel.detectLanguage()
                 }
                 .disabled(true) //stringsModel.selected.isEmpty)
             }
             CommandGroup(after: .toolbar) {
-                Button(stringsModel.staleItemsHidden ? "Show Stale Items" : "Hide Stale Items") {
-                    stringsModel.staleItemsHidden.toggle()
+                Button(appModel.staleItemsHidden ? "Show Stale Items" : "Hide Stale Items") {
+                    appModel.staleItemsHidden.toggle()
                 }
-                Button(stringsModel.dontTranslateItemsHidden ? "Show \"Don't Translate\" Items" : "Hide \"Don't Translate\" Items") {
-                    stringsModel.dontTranslateItemsHidden.toggle()
+                Button(appModel.dontTranslateItemsHidden ? "Show \"Don't Translate\" Items" : "Hide \"Don't Translate\" Items") {
+                    appModel.dontTranslateItemsHidden.toggle()
                 }
-                Button(stringsModel.translateLaterItemsHidden ? "Show Translate Later Items" : "Hide Translate Later Items") {
-                    stringsModel.translateLaterItemsHidden.toggle()
+                Button(appModel.translateLaterItemsHidden ? "Show Translate Later Items" : "Hide Translate Later Items") {
+                    appModel.translateLaterItemsHidden.toggle()
                 }
                 Divider()
             }
@@ -266,10 +266,10 @@ extension XCStringEditorApp {
     }
 
     private func openURL(_ url: URL) {
-        if stringsModel.isModified == false {
-            stringsModel.load(file: url)
+        if appModel.isModified == false {
+            appModel.load(file: url)
         } else {
-            stringsModel.openingFileURL = url
+            appModel.openingFileURL = url
             isDiscardConfirmVisible = true
         }
     }

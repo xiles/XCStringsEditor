@@ -31,7 +31,7 @@ struct ContentView: View {
         case table
     }
     
-    @Environment(XCStringsModel.self) private var stringsModel
+    @Environment(AppModel.self) private var appModel
     @Environment(WindowDelegate.self) private var windowDelegate
     
     @State private var translation: String = ""
@@ -48,10 +48,10 @@ struct ContentView: View {
 //    }
         
     var body: some View {
-        @Bindable var stringsModel = stringsModel
+        @Bindable var appModel = appModel
         
         NavigationStack {
-            Table(selection: $stringsModel.selected, sortOrder: $stringsModel.sortOrder) {
+            Table(selection: $appModel.selected, sortOrder: $appModel.sortOrder) {
                 // Key
                 TableColumn("Key", value: \.key) { item in
                     keyColumnView(item: item)
@@ -59,16 +59,16 @@ struct ContentView: View {
                 
 
                 // Source
-                TableColumn("Default Localization (\(stringsModel.baseLanguage.code))") { item in
+                TableColumn("Default Localization (\(appModel.baseLanguage.code))") { item in
                     sourceColumnView(item: item)
                 }
 
                 // Translation
-                TableColumn(stringsModel.currentLanguage.localizedName) { item in
+                TableColumn(appModel.currentLanguage.localizedName) { item in
                     ZStack {
                         Text(verbatim: item.translation ?? item.sourceString)
                             .foregroundStyle(item.translation == nil ? .secondary.opacity(0.5) : (item.needsWork ? Color.orange : .primary))
-                            .opacity(isEditing && item.id == stringsModel.editingID ? 0.0 : 1.0)
+                            .opacity(isEditing && item.id == appModel.editingID ? 0.0 : 1.0)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .lineLimit(nil)
                             .multilineTextAlignment(.leading)
@@ -79,15 +79,15 @@ struct ContentView: View {
                                 onTapTranslation(item: item)
                             }
                         
-                        if isEditing && stringsModel.editingID == item.id {
+                        if isEditing && appModel.editingID == item.id {
                             // Editing TextField
                             TextField("", text: $translation, axis: .vertical)
                                 .lineLimit(nil)
                                 .focused($focusedField, equals: .translation)
                                 .onSubmit {
-                                    if let editingID = stringsModel.editingID {
-                                        stringsModel.updateTranslation(for: editingID, with: translation)
-                                        stringsModel.editingID = nil
+                                    if let editingID = appModel.editingID {
+                                        appModel.updateTranslation(for: editingID, with: translation)
+                                        appModel.editingID = nil
                                         isEditing = false
                                     }
                                 }
@@ -119,42 +119,42 @@ struct ContentView: View {
                 .alignment(.center)
                 
             } rows: {
-                OutlineGroup(stringsModel.localizeItems, children: \.children) { item in
+                OutlineGroup(appModel.localizeItems, children: \.children) { item in
                     TableRow(item)
                         .contextMenu { rowContextMenu(for: item) }
                 }
             }
             .focused($focusedField, equals: .table)
-            .navigationTitle(stringsModel.title ?? "XCStringsEditor")
+            .navigationTitle(appModel.title ?? "XCStringsEditor")
             .onAppear {
                 startMonitorKeyboardEvent()
                 
                 windowDelegate.allowClose = {
-                    if stringsModel.canClose == false {
+                    if appModel.canClose == false {
                         showConfirmClose = true
                         return false
                     }
                     return true
                 }
             }
-            .onChange(of: stringsModel.sortOrder, { oldValue, newValue in
-                stringsModel.sort(using: newValue)
+            .onChange(of: appModel.sortOrder, { oldValue, newValue in
+                appModel.sort(using: newValue)
             })
             .toolbar {
                 ToolbarItemGroup(placement: .navigation) {
-                    if stringsModel.isModified {
+                    if appModel.isModified {
                         Circle()
                             .fill(.blue)
                             .frame(width: 6, height: 6)
                     }
                 }
                     
-                if stringsModel.languages.isEmpty == false {
+                if appModel.languages.isEmpty == false {
                     ToolbarItemGroup(placement: .primaryAction) {
                         Spacer()
                         
-                        Picker("Language", selection: $stringsModel.currentLanguage) {
-                            ForEach(stringsModel.languages) { language in
+                        Picker("Language", selection: $appModel.currentLanguage) {
+                            ForEach(appModel.languages) { language in
                                 Text(language.localizedName)
                             }
                         }
@@ -164,9 +164,9 @@ struct ContentView: View {
                         
                         Menu {
                             Button {
-                                stringsModel.filter.reset()
+                                appModel.filter.reset()
                             } label: {
-                                if stringsModel.filter.hasOn {
+                                if appModel.filter.hasOn {
                                     Text("All Items")
                                 } else {
                                     Label("All Item(s)", systemImage: "checkmark")
@@ -174,14 +174,14 @@ struct ContentView: View {
                             }
                             Divider()
                             Group {
-                                Toggle("New", isOn: $stringsModel.filter.new)
+                                Toggle("New", isOn: $appModel.filter.new)
                                 //                            Toggle("Translated", isOn: $stringsModel.filter.translated)
-                                Picker(selection: $stringsModel.filter.translated, label: Text("Translation")) {
+                                Picker(selection: $appModel.filter.translated, label: Text("Translation")) {
                                     Text("All").tag(0)
                                     Text("Translated").tag(1)
                                     Text("Untranslated").tag(2)
                                 }
-                                Picker(selection: $stringsModel.filter.translationQuality, label: Text("Reverse")) {
+                                Picker(selection: $appModel.filter.translationQuality, label: Text("Reverse")) {
                                     Text("All").tag(0)
                                     Text("Missing").tag(1)
                                     Text("Different").tag(2)
@@ -189,14 +189,14 @@ struct ContentView: View {
                                     Text("Exact").tag(4)
                                 }
                                 
-                                Toggle("Modified", isOn: $stringsModel.filter.modified)
-                                Toggle("Needs Review", isOn: $stringsModel.filter.needsReview)
-                                Toggle("Needs Work", isOn: $stringsModel.filter.needsWork)
-                                Toggle("Translate Later", isOn: $stringsModel.filter.translateLater)
-                                Toggle("Source = Translation", isOn: $stringsModel.filter.sourceEqualTranslation)
+                                Toggle("Modified", isOn: $appModel.filter.modified)
+                                Toggle("Needs Review", isOn: $appModel.filter.needsReview)
+                                Toggle("Needs Work", isOn: $appModel.filter.needsWork)
+                                Toggle("Translate Later", isOn: $appModel.filter.translateLater)
+                                Toggle("Source = Translation", isOn: $appModel.filter.sourceEqualTranslation)
                             }
                         } label: {
-                            Label("Filter", systemImage: stringsModel.filter.hasOn ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
+                            Label("Filter", systemImage: appModel.filter.hasOn ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
                         }
                         .menuIndicator(.hidden)
                     }
@@ -204,22 +204,22 @@ struct ContentView: View {
                     
             }
             .toolbarRole(.editor)
-            .searchable(text: $stringsModel.searchText)
+            .searchable(text: $appModel.searchText)
             .onChange(of: focusedField) { oldValue, newValue in
                 if oldValue == .translation && newValue != .translation {
                     logger.debug("textfield focusout")
 
                     var oldSelected: Set<LocalizeItem.ID>?
-                    if let editingID = stringsModel.editingID {
+                    if let editingID = appModel.editingID {
                         logger.debug("textfield focusout update")
                         
                         // update editing item
-                        stringsModel.updateTranslation(for: editingID, with: translation)
-                        stringsModel.editingID = nil
+                        appModel.updateTranslation(for: editingID, with: translation)
+                        appModel.editingID = nil
                         isEditing = false
                         
-                        oldSelected = stringsModel.selected
-                        stringsModel.selected = []
+                        oldSelected = appModel.selected
+                        appModel.selected = []
                     }
 
                     if let nextEditingItem {
@@ -229,12 +229,12 @@ struct ContentView: View {
                         }
                     } else {
                         if let oldSelected {
-                            stringsModel.selected = oldSelected
+                            appModel.selected = oldSelected
                         }
                     }
                 }
             }
-            .alert("Translate", isPresented: $stringsModel.showAPIKeyAlert) {
+            .alert("Translate", isPresented: $appModel.showAPIKeyAlert) {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text("Google Translate API Key must be set in settings to use this function.")
@@ -242,7 +242,7 @@ struct ContentView: View {
             .alert("Confirm Close", isPresented: $showConfirmClose) {
                 Button("Cancel", role: .cancel) {}
                 Button("Discard Changes", role: .destructive) {
-                    stringsModel.forceClose = true
+                    appModel.forceClose = true
                     NSApp.terminate(nil)
                 }
             } message: {
@@ -250,7 +250,7 @@ struct ContentView: View {
             }
             
         } // NavigationStack
-        .modifier(ActivityIndicatorModifier(isPresented: $stringsModel.isLoading))
+        .modifier(ActivityIndicatorModifier(isPresented: $appModel.isLoading))
     }
     
     private func keyColumnView(item: LocalizeItem) -> some View {
@@ -309,47 +309,47 @@ struct ContentView: View {
 
         Button("Auto Translate") {
             Task {
-                await stringsModel.translate(ids: itemIDs)
+                await appModel.translate(ids: itemIDs)
             }
         }
         Button("Reverse Translate") {
-            stringsModel.reverseTranslate(ids: itemIDs)
+            appModel.reverseTranslate(ids: itemIDs)
         }
 
         Divider()
 
         Button("Mark for Review") {
-            stringsModel.markNeedsReview(ids: itemIDs)
+            appModel.markNeedsReview(ids: itemIDs)
         }
         Button("Mark as Reviewed") {
-            stringsModel.reviewed(ids: itemIDs)
+            appModel.reviewed(ids: itemIDs)
         }
 
         Divider()
         
-        if stringsModel.items(with: Array(itemIDs)).allSatisfy({ $0.shouldTranslate == false }) {
+        if appModel.items(with: Array(itemIDs)).allSatisfy({ $0.shouldTranslate == false }) {
             Button("Mark for Translation") {
-                stringsModel.setShouldTranslate(true, for: itemIDs)
+                appModel.setShouldTranslate(true, for: itemIDs)
             }
         } else {
             Button("Mark as \"Don't Translate\"") {
-                stringsModel.setShouldTranslate(false, for: itemIDs)
+                appModel.setShouldTranslate(false, for: itemIDs)
             }
         }
 
         Divider()
         
         Button("Mark for Translate Later") {
-            stringsModel.markTranslateLater(ids: itemIDs, value: true)
+            appModel.markTranslateLater(ids: itemIDs, value: true)
         }
         Button("Unmark Translate Later") {
-            stringsModel.markTranslateLater(ids: itemIDs, value: false)
+            appModel.markTranslateLater(ids: itemIDs, value: false)
         }
         Button("Mark for Needs Work") {
-            stringsModel.markNeedsWork(ids: itemIDs, value: true)
+            appModel.markNeedsWork(ids: itemIDs, value: true)
         }
         Button("Unmark Needs Work") {
-            stringsModel.markNeedsWork(ids: itemIDs, value: false)
+            appModel.markNeedsWork(ids: itemIDs, value: false)
         }
     }
     
@@ -357,8 +357,8 @@ struct ContentView: View {
         NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             let modifierFlags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
             if modifierFlags == [] && event.keyCode == 36/* Enter */ {
-                if stringsModel.editingID == nil {
-                    if let itemID = stringsModel.selected.first, let item = stringsModel.item(with: itemID) {
+                if appModel.editingID == nil {
+                    if let itemID = appModel.selected.first, let item = appModel.item(with: itemID) {
                         editItem(item)
                     }
                     return nil  // Intercept the event
@@ -378,12 +378,12 @@ struct ContentView: View {
 //        }
 //        #endif
 
-        stringsModel.save()
+        appModel.save()
     }
     
     private func contextMenuItemIDs(itemID: LocalizeItem.ID) -> Set<LocalizeItem.ID> {
-        if stringsModel.selected.contains(itemID) {
-            return stringsModel.selected
+        if appModel.selected.contains(itemID) {
+            return appModel.selected
         } else {
             return [itemID]
         }
@@ -406,8 +406,8 @@ struct ContentView: View {
         guard item.children == nil else {
             return
         }
-        stringsModel.editingID = item.id
-        stringsModel.selected = [item.id]
+        appModel.editingID = item.id
+        appModel.selected = [item.id]
         isEditing = true
     }
     

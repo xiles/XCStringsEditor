@@ -1,5 +1,5 @@
 //
-//  XCStringsModel_GoogleTranslate.swift
+//  AppModel_GoogleTranslate.swift
 //  XCStringsEditor
 //
 //  Created by Michal on 07.05.2024.
@@ -9,7 +9,7 @@ import Foundation
 
 //MARK: - Google Translate
 
-extension XCStringsModel {
+extension AppModel {
     
     func translateByGoogle(ids: Set<LocalizeItem.ID>? = nil) async {
         guard GoogleTranslate.shared.isAvailable == true else {
