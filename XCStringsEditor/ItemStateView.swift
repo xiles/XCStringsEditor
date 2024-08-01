@@ -16,6 +16,7 @@ struct ItemStateView: View {
         func body(content: Content) -> some View {
             content
                 .font(.system(size: 8, weight: .medium))
+                .tracking(-0.4)
                 .padding(.horizontal, 4)
                 .padding(.vertical, 2)
                 .background(
@@ -28,6 +29,9 @@ struct ItemStateView: View {
     
     var body: some View {
         switch state {
+        case .dontTranslate:
+            Text("DON'T TRANSLATE")
+                .modifier(BadgeModifier(color: .gray))
         case .translateLater:
             Text("LATER")
                 .modifier(BadgeModifier(color: .gray))
@@ -57,6 +61,7 @@ struct ItemStateView: View {
         ItemStateView(state: .translateLater)
         ItemStateView(state: .stale)
         ItemStateView(state: .translated)
+        ItemStateView(state: .dontTranslate)
     }
     .padding()
 }

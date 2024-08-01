@@ -149,6 +149,19 @@ struct XCStringEditorApp: App {
                 }
                 .disabled(stringsModel.selected.isEmpty)
 
+                if stringsModel.selected.isEmpty == false && stringsModel.items(with: Array(stringsModel.selected)).allSatisfy({ $0.shouldTranslate == false }) {
+                    Button("Mark for Translation") {
+                        stringsModel.setShouldTranslate(true)
+                    }
+                } else {
+                    Button("Mark as \"Don't Translate\"") {
+                        stringsModel.setShouldTranslate(false)
+                    }
+                    .disabled(stringsModel.selected.isEmpty)
+                }
+                                
+                Divider()
+                
                 Button("Mark for Translate Later") {
                     stringsModel.markTranslateLater(value: true)
                 }
@@ -207,6 +220,9 @@ struct XCStringEditorApp: App {
             CommandGroup(after: .toolbar) {
                 Button(stringsModel.staleItemsHidden ? "Show Stale Items" : "Hide Stale Items") {
                     stringsModel.staleItemsHidden.toggle()
+                }
+                Button(stringsModel.dontTranslateItemsHidden ? "Show \"Don't Translate\" Items" : "Hide \"Don't Translate\" Items") {
+                    stringsModel.dontTranslateItemsHidden.toggle()
                 }
                 Button(stringsModel.translateLaterItemsHidden ? "Show Translate Later Items" : "Hide Translate Later Items") {
                     stringsModel.translateLaterItemsHidden.toggle()

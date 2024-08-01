@@ -92,9 +92,15 @@ class XCStringsModel {
             reloadData()
         }
     }
-    
-    var selected = Set<LocalizeItem.ID>()
+    var dontTranslateItemsHidden: Bool = false {
+        didSet {
+            UserDefaults.standard.set(dontTranslateItemsHidden, forKey: "DontTranslateItemsHidden")
+            reloadData()
+        }
+    }
 
+    var selected = Set<LocalizeItem.ID>()
+    
     var settings: FileSettings!
     
     var showAPIKeyAlert: Bool = false
@@ -106,6 +112,7 @@ class XCStringsModel {
         
         translateLaterItemsHidden = UserDefaults.standard.bool(forKey: "TranslateLaterItemsHidden")
         staleItemsHidden = UserDefaults.standard.bool(forKey: "StaleItemsHidden")
+        dontTranslateItemsHidden = UserDefaults.standard.bool(forKey: "DontTranslateItemsHidden")
         
 //        searchText.publisher
 //            .debounce(for: 0.2, scheduler: RunLoop.main)
@@ -237,6 +244,8 @@ class XCStringsModel {
                 continue
             }
 
+            xcstrings.strings[index].shouldTranslate = item.shouldTranslate
+            
             if let children = item.children {
                 // plural or device variations
                 for subitem in children {
@@ -320,6 +329,9 @@ class XCStringsModel {
                 return false
             }
             
+            if dontTranslateItemsHidden == true && $0.shouldTranslate == false {
+                return false
+            }
             if translateLaterItemsHidden == true && $0.translateLater {
                 return false
             }
@@ -479,7 +491,7 @@ class XCStringsModel {
                         
                     } else if let deviceVariation = localization.deviceVariation {
                         // device varations
-                        let item = LocalizeItem(id: id, key: xcstring.key!, sourceString: "", comment: xcstring.comment, language: language, translation: nil, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: false)
+                        let item = LocalizeItem(id: id, key: xcstring.key!, sourceString: "", comment: xcstring.comment, language: language, translation: nil, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: false, shouldTranslate: xcstring.shouldTranslate)
                         item.translateLater = settings.translateLater.contains(id)
                         item.needsWork = settings.needsWork.contains(id)
                         
@@ -514,7 +526,7 @@ class XCStringsModel {
 
                 } else {
                     // not translated
-                    let item = LocalizeItem(id: id, key: xcstring.key!, sourceString: sourceString, comment: xcstring.comment, language: language, translation: nil, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: false)
+                    let item = LocalizeItem(id: id, key: xcstring.key!, sourceString: sourceString, comment: xcstring.comment, language: language, translation: nil, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: false, shouldTranslate: xcstring.shouldTranslate)
                     item.translateLater = settings.translateLater.contains(id)
                     item.needsWork = settings.needsWork.contains(id)
                     localizeItems.append(item)
@@ -529,7 +541,7 @@ class XCStringsModel {
         let needsReview = stringUnit.state == .needsReview
         let key = deviceType != nil ? deviceType!.localizedName : xcstring.key!
         
-        let item = LocalizeItem(id: id, key: key, sourceString: sourceString, comment: xcstring.comment, language: language, translation: stringUnit.value, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: needsReview)
+        let item = LocalizeItem(id: id, key: key, sourceString: sourceString, comment: xcstring.comment, language: language, translation: stringUnit.value, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: needsReview, shouldTranslate: xcstring.shouldTranslate)
         item.translateLater = parentItem?.translateLater ?? settings.translateLater.contains(id)
         item.needsWork = parentItem?.needsWork ?? settings.needsWork.contains(id)
         item.deviceType = deviceType
@@ -540,7 +552,7 @@ class XCStringsModel {
     private func buildPluralVarationItem(_ variation: [XCString.PluralType: XCString.Localization], id: String, sourceString: String, xcstring: XCString, sourceLanguage: Language, language: Language, deviceType: XCString.DeviceType? = nil) -> LocalizeItem {
         let key = deviceType != nil ? deviceType!.localizedName : xcstring.key!
         
-        let item = LocalizeItem(id: id, key: key, sourceString: "", comment: xcstring.comment, language: language, translation: nil, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: false)
+        let item = LocalizeItem(id: id, key: key, sourceString: "", comment: xcstring.comment, language: language, translation: nil, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: false, shouldTranslate: xcstring.shouldTranslate)
         item.translateLater = settings.translateLater.contains(id)
         item.needsWork = settings.needsWork.contains(id)
         item.children = buildPluralVariationSubItems(variation, parentID: id, parent: item, sourceString: sourceString, xcstring: xcstring, sourceLanguage: sourceLanguage, language: language)
@@ -564,7 +576,7 @@ class XCStringsModel {
                     }
                 }
                 
-                let subitem = LocalizeItem(id: subid, key: key.localizedName, sourceString: subSourceString, comment: nil, language: language, translation: stringUnit.value, isStale: false, translateLater: false, needsReview: needsReview)
+                let subitem = LocalizeItem(id: subid, key: key.localizedName, sourceString: subSourceString, comment: nil, language: language, translation: stringUnit.value, isStale: false, translateLater: false, needsReview: needsReview, shouldTranslate: xcstring.shouldTranslate)
                 subitem.pluralType = key
                 subitem.parentID = parentID
                 subitem.translateLater = parent.translateLater
@@ -593,6 +605,10 @@ class XCStringsModel {
             }
         }
         return nil
+    }
+    
+    func items(with ids: [LocalizeItem.ID]) -> [LocalizeItem] {
+        return ids.compactMap { self.item(with: $0) }
     }
 
     private func findSubItem(id: String, in item: LocalizeItem) -> LocalizeItem? {
@@ -724,7 +740,42 @@ class XCStringsModel {
             }
         }
     }
-    
+
+    func setShouldTranslate(_ shouldTranslate: Bool, for ids: Set<LocalizeItem.ID>? = nil) {
+        var updatedIDs = [LocalizeItem.ID]()
+        let itemIDs = ids ?? self.selected
+        
+        for itemID in itemIDs {
+            guard let item = item(with: itemID), item.parentID == nil else {
+                continue
+            }
+            item.shouldTranslate = shouldTranslate
+            updatedIDs.append(item.id)
+            // update children
+            item.children?.forEach { $0.shouldTranslate = shouldTranslate }
+        }
+        
+        let languages = self.languages.filter { $0 != currentLanguage }
+        var ids = [LocalizeItem.ID]()
+        for itemID in updatedIDs {
+            let components = itemID.components(separatedBy: LocalizeItem.ID_DIVIDER)
+            for language in languages {
+                let newIDSuffix = language.code + components[1].trimmingPrefix(self.currentLanguage.code)
+                let id = components[0] + LocalizeItem.ID_DIVIDER + newIDSuffix
+                ids.append(id)
+            }
+        }
+
+        for itemID in ids {
+            guard let item = item(with: itemID, in: allLocalizeItems) else {
+                continue
+            }
+            item.shouldTranslate = shouldTranslate
+            // update children
+            item.children?.forEach { $0.shouldTranslate = shouldTranslate }
+        }
+    }
+
     func reviewed(ids: Set<LocalizeItem.ID>? = nil) {
         let itemIDs = ids ?? self.selected
         
@@ -778,6 +829,7 @@ class XCStringsModel {
             }
         }
     }
+    
 
     /// Mark "Needs Work" for the string
     ///

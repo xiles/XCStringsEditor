@@ -263,7 +263,7 @@ struct ContentView: View {
                 .lineLimit(nil)
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
-                .foregroundStyle(item.translateLater ? .secondary : (item.needsWork && item.children != nil ? Color.orange : .primary))
+                .foregroundStyle(item.translateLater || item.shouldTranslate == false ? .secondary : (item.needsWork && item.children != nil ? Color.orange : .primary))
         }
     }
     
@@ -272,7 +272,7 @@ struct ContentView: View {
             .lineLimit(nil)
             .multilineTextAlignment(.leading)
             .fixedSize(horizontal: false, vertical: true)
-            .foregroundStyle(item.translateLater ? .secondary : .primary)
+            .foregroundStyle(item.translateLater || item.shouldTranslate == false ? .secondary : .primary)
     }
     
     @ViewBuilder
@@ -323,6 +323,18 @@ struct ContentView: View {
         }
         Button("Mark as Reviewed") {
             stringsModel.reviewed(ids: itemIDs)
+        }
+
+        Divider()
+        
+        if stringsModel.items(with: Array(itemIDs)).allSatisfy({ $0.shouldTranslate == false }) {
+            Button("Mark for Translation") {
+                stringsModel.setShouldTranslate(true, for: itemIDs)
+            }
+        } else {
+            Button("Mark as \"Don't Translate\"") {
+                stringsModel.setShouldTranslate(false, for: itemIDs)
+            }
         }
 
         Divider()
@@ -378,6 +390,10 @@ struct ContentView: View {
     }
     
     private func onTapTranslation(item: LocalizeItem) {
+        guard item.shouldTranslate == true else {
+            return
+        }
+        
         if focusedField == .translation {
             nextEditingItem = item
             focusedField = nil

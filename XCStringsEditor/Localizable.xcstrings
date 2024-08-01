@@ -195,6 +195,9 @@
     "Discard Changes" : {
 
     },
+    "DON'T TRANSLATE" : {
+
+    },
     "Dutch" : {
 
     },
@@ -244,6 +247,9 @@
 
     },
     "Hebrew" : {
+
+    },
+    "Hide \"Don't Translate\" Items" : {
 
     },
     "Hide Stale Items" : {
@@ -297,6 +303,9 @@
     "Many" : {
 
     },
+    "Mark as \"Don't Translate\"" : {
+
+    },
     "Mark as Reviewed" : {
 
     },
@@ -310,6 +319,9 @@
 
     },
     "Mark for Translate Later" : {
+
+    },
+    "Mark for Translation" : {
 
     },
     "Missing" : {
@@ -401,6 +413,9 @@
 
     },
     "Save and Open" : {
+
+    },
+    "Show \"Don't Translate\" Items" : {
 
     },
     "Show Stale Items" : {

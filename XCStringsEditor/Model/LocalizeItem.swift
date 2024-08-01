@@ -33,6 +33,7 @@ class LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
         case needsWork
         case needsReview
         case translateLater
+        case dontTranslate
         case stale
         case translated
     }
@@ -50,7 +51,9 @@ class LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
     var deviceType: XCString.DeviceType?
     
     var state: State {
-        if translateLater {
+        if shouldTranslate == false {
+            return .dontTranslate
+        } else if translateLater {
             return .translateLater
         } else if needsWork {
             return .needsWork
@@ -72,6 +75,7 @@ class LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
     var translateLater: Bool
     var needsWork: Bool
     var needsReview: Bool
+    var shouldTranslate: Bool = true
 
     var isModified: Bool = false
 //    var isEditing: Bool = false
@@ -150,7 +154,7 @@ class LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
         return nil
     }
     
-    internal init(id: String, key: String, sourceString: String, comment: String? = nil, language: Language, translation: String? = nil, reverseTranslation: String? = nil, pluralType: XCString.PluralType? = nil, deviceType: XCString.DeviceType? = nil, isStale: Bool = false, translateLater: Bool = false, needsWork: Bool = false, needsReview: Bool, isModified: Bool = false, children: [LocalizeItem]? = nil) {
+    internal init(id: String, key: String, sourceString: String, comment: String? = nil, language: Language, translation: String? = nil, reverseTranslation: String? = nil, pluralType: XCString.PluralType? = nil, deviceType: XCString.DeviceType? = nil, isStale: Bool = false, translateLater: Bool = false, needsWork: Bool = false, needsReview: Bool, shouldTranslate: Bool = true, isModified: Bool = false, children: [LocalizeItem]? = nil) {
         self.id = id
         self.key = key
         self.sourceString = sourceString
@@ -164,6 +168,7 @@ class LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
         self.translateLater = translateLater
         self.needsWork = needsWork
         self.needsReview = needsReview
+        self.shouldTranslate = shouldTranslate
         self.isModified = isModified
         self.children = children
     }

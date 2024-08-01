@@ -287,9 +287,10 @@ struct XCString: Codable {
     var key: String?
     var localizations: [Language: Localization]
     var extractionState: ExtractionState = .none
+    var shouldTranslate: Bool = true
     
     private enum CodingKeys: CodingKey {
-        case comment, key, localizations, extractionState
+        case comment, key, localizations, extractionState, shouldTranslate
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -308,6 +309,9 @@ struct XCString: Codable {
         }
         if l.isEmpty == false {
             try container.encode(l, forKey: .localizations)
+        }
+        if shouldTranslate == false {
+            try container.encode(shouldTranslate, forKey: .shouldTranslate)
         }
     }
     
@@ -332,5 +336,7 @@ struct XCString: Codable {
         } else {
             self.localizations = [:]
         }
+        
+        shouldTranslate = try values.decodeIfPresent(Bool.self, forKey: .shouldTranslate) ?? true
     }
 }
