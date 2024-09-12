@@ -27,11 +27,6 @@ public class GoogleTranslate {
     }
     
     /// Detect response structure.
-    public struct Detection {
-        public let language: String
-        public let isReliable: Bool
-        public let confidence: Float
-    }
     
     /// API structure.
     private struct API {

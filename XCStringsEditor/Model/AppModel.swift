@@ -105,6 +105,7 @@ class AppModel {
     
     var showAPIKeyAlert: Bool = false
     var isLoading: Bool = false
+    var translator = GoogleTranslator()
 
     init() {
         GoogleTranslate.shared.configure(apiKey: UserDefaults.standard.googleTranslateAPIKey)

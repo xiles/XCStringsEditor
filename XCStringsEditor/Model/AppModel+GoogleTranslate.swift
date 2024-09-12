@@ -88,8 +88,8 @@ extension AppModel {
         do {
             let sourceLanguage = xcstrings.sourceLanguage
             
-            let translation = try await GoogleTranslate.shared.translate(text, source: sourceLanguage.code, target: language.code)
-            let reverseTranslation = try await GoogleTranslate.shared.translate(translation, source: language.code, target: sourceLanguage.code)
+            let translation = try await translator.translate(text: text, source: sourceLanguage.code, target: language.code)
+            let reverseTranslation = try await translator.translate(text: translation, source: language.code, target: sourceLanguage.code)
             
             return (translation, reverseTranslation)
             
@@ -112,7 +112,7 @@ extension AppModel {
     
     func detectLanguage(text: String) async -> String? {
         do {
-            let languages = try await GoogleTranslate.shared.detectLanguage(text)
+            let languages = try await translator.detect(text: text)
             return languages.first?.language
         } catch {
             return nil

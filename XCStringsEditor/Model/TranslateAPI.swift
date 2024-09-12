@@ -28,12 +28,58 @@ protocol API {
     var parameters: [URLQueryItem] { get }
 // "GET"
     var method: HTTPMethod { get }
+    
 }
-enum GoogleTranslateAPI: API {
-    static var apiKey:String = ""
-    case translate(text:String,source: String, target: String, format: String = "text", model: String = "base")
-    case detect(text:String)
-    case languages(model:String,target:String)
+
+protocol TranslateAPI{
+    var apiKey: String? { get set }
+    func translate(text:String,source: String, target: String, format: String, model: String)throws->API
+    func detect(text:String)throws->API?
+    func languages(model:String,target:String)throws->API?
+}
+
+struct GoogleTranslateAPI: TranslateAPI {
+    var apiKey: String?{
+        get {
+            UserDefaults.standard.string(forKey: String(describing: self))
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: String(describing: self))
+        }
+    }
+    var apiIsEnabled: Bool {
+        return apiKey != nil && apiKey!.isEmpty == false
+    }
+    func detect(text: String) throws -> (any API)? {
+        try checkAPIKey()
+        return GoogleAPI.detect(text: text, apiKey:apiKey!)
+    }
+    
+    func languages(model: String, target: String) throws -> (any API)? {
+        try checkAPIKey()
+        return GoogleAPI.languages(model: model, target: target, apiKey: apiKey!)
+    }
+    
+    func translate(text:String,source: String, target: String, format: String = "text", model: String = "base")throws->API{
+        try checkAPIKey()
+        return GoogleAPI.translate(text: text, source: source, target: target, format: format, model: model, apiKey: apiKey!)
+    }
+    func checkAPIKey()throws{
+        guard let apiKey = apiKey else {
+            throw TranslatorError.invalidAPI
+        }
+    }
+}
+enum TranslatorError: Error {
+    case invalidAPI
+    case invalidInput
+    case responseError
+    case networkError
+}
+enum GoogleAPI: API {
+    case translate(text:String,source: String, target: String, format: String = "text", model: String = "base",apiKey:String)
+    case detect(text:String,apiKey:String)
+    case languages(model:String,target:String,apiKey:String)
     var scheme: HTTPScheme {
         return .https
     }
@@ -52,7 +98,7 @@ enum GoogleTranslateAPI: API {
     }
     var parameters: [URLQueryItem] {
         switch self {
-        case .translate(let text, let source, let target, let format, let model):
+        case .translate(let text, let source, let target, let format, let model,let apiKey):
             return [
                 URLQueryItem(name: "key", value: apiKey),
                 URLQueryItem(name: "q", value: text),
@@ -62,12 +108,12 @@ enum GoogleTranslateAPI: API {
                 URLQueryItem(name: "model", value: model)
                 
             ]
-        case .detect(let text):
+        case .detect(let text,let apiKey):
             return [
                 URLQueryItem(name: "key", value: apiKey),
                 URLQueryItem(name: "q", value: text)
             ]
-        case .languages(let model,let target):
+        case .languages(let model,let target,let apiKey):
             return [
                 URLQueryItem(name: "key", value: apiKey),
                 URLQueryItem(name: "model", value: model),
