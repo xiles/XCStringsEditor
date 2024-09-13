@@ -39,11 +39,11 @@ final class NetworkManager {
             // Perform the network request using async/await
             let (data, response) = try await URLSession.shared.data(for: urlRequest)
             
-            // Check response status
-//            guard let httpResponse = response as? HTTPURLResponse,
-//                  (200...299).contains(httpResponse.statusCode) else {
-//                throw TranslatorError.networkError
-//            }
+             // Check response status
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                throw TranslatorError.networkError
+            }
             
             // Convert the response data to a dictionary using JSONSerialization
             do {

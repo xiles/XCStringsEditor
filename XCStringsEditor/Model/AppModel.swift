@@ -1062,5 +1062,27 @@ class AppModel {
             return nil
         }
     }
+    //MARK: NOTHING HAPPENED
+    func detectLanguage(){
+        //        Task {
+        //            for id in self.selected {
+        //                guard
+        //                    let item = self.item(with: id),
+        //                    let translation = item.translation, translation.isEmpty == false
+        //                else {
+        //                    continue
+        //                }
+        //
+        //                let languageCode = await self.detectLanguage(text: translation)
+        ////                print("detection", languageCode, id)
+        //                if languageCode == "zh-CN" {
+        //                    print("found zh-CN", id)
+        //                    item.needsWork = true
+        //                }
+        //            }
+        //            self.selected = []
+        //            print("Done Detection")
+        //        }
+    }
     
 }
