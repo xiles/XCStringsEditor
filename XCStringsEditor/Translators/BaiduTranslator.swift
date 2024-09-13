@@ -9,7 +9,8 @@ import Foundation
 class BaiduTranslator: Translator {
     var translateAPI: any TranslateAPI = BaiduTranslateAPI()
     func translate(_ inputModel: InputModel) async throws -> String {
-        let result: [String: Any] = try await NetworkManager.request(endpoint: translateAPI.translate(inputModel))
+        let api = try translateAPI.translate(inputModel)
+        let result: [String: Any] = try await NetworkManager.request(endpoint: api)
         guard let translations = result["trans_result"] as? [[String: Any]] else {
             throw TranslatorError.responseError
         }

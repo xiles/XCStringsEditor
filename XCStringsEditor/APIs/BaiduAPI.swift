@@ -30,7 +30,7 @@ struct BaiduTranslateAPI:TranslateAPI{
         return nil
     }
     func checkAPIKey()throws{
-        guard apiKey != nil  && appID != nil else {
+        guard apiKey != nil  && appID != nil  && !apiKey!.isEmpty && !appID!.isEmpty else {
             throw TranslatorError.invalidAPI
         }
     }

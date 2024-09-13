@@ -237,7 +237,7 @@ struct ContentView: View {
             .alert("Translate", isPresented: $appModel.showAPIKeyAlert) {
                 Button("OK", role: .cancel) {}
             } message: {
-                Text("Google Translate API Key must be set in settings to use this function.")
+                Text("API Key must be set in settings to use this function.")
             }            
             .alert("Confirm Close", isPresented: $showConfirmClose) {
                 Button("Cancel", role: .cancel) {}
