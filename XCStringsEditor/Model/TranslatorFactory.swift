@@ -7,15 +7,15 @@
 
 import Foundation
 final class TranslatorFactory {
-    static private let googleTranslator = GoogleTranslator()
-    static private let deepLTranslator = DeepLTranslator()
     static var translator:any Translator{
         get{
             switch UserDefaults.standard.translationService {
             case .google:
-                return googleTranslator
+                return GoogleTranslator()
             case .deepL:
-                return deepLTranslator
+                return DeepLTranslator()
+            case .baidu:
+                return BaiduTranslator()
             }
         }
     }

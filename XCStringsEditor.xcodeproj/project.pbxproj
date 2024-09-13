@@ -38,6 +38,8 @@
 		38A18E2E2C942C8F003ADC62 /* GoogleAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A18E2D2C942C8F003ADC62 /* GoogleAPI.swift */; };
 		38A18E312C942D87003ADC62 /* DeepLAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A18E302C942D87003ADC62 /* DeepLAPI.swift */; };
 		38A18E332C943363003ADC62 /* InputModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A18E322C943363003ADC62 /* InputModel.swift */; };
+		38A18E392C943D1F003ADC62 /* BaiduAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A18E382C943D1F003ADC62 /* BaiduAPI.swift */; };
+		38A18E3B2C943EF0003ADC62 /* BaiduTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A18E3A2C943EF0003ADC62 /* BaiduTranslator.swift */; };
 		C0039DCC2C1CE2E100A93A29 /* UserDefaults+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0039DCB2C1CE2E100A93A29 /* UserDefaults+Keys.swift */; };
 /* End PBXBuildFile section */
 
@@ -76,6 +78,8 @@
 		38A18E2D2C942C8F003ADC62 /* GoogleAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAPI.swift; sourceTree = "<group>"; };
 		38A18E302C942D87003ADC62 /* DeepLAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLAPI.swift; sourceTree = "<group>"; };
 		38A18E322C943363003ADC62 /* InputModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputModel.swift; sourceTree = "<group>"; };
+		38A18E382C943D1F003ADC62 /* BaiduAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaiduAPI.swift; sourceTree = "<group>"; };
+		38A18E3A2C943EF0003ADC62 /* BaiduTranslator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaiduTranslator.swift; sourceTree = "<group>"; };
 		C0039DCB2C1CE2E100A93A29 /* UserDefaults+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Keys.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -198,6 +202,7 @@
 			children = (
 				38A18E282C942B85003ADC62 /* GoogleTranslator.swift */,
 				38A18E232C93EE36003ADC62 /* DeepLTranslator.swift */,
+				38A18E3A2C943EF0003ADC62 /* BaiduTranslator.swift */,
 			);
 			path = Translators;
 			sourceTree = "<group>";
@@ -207,6 +212,7 @@
 			children = (
 				38A18E2D2C942C8F003ADC62 /* GoogleAPI.swift */,
 				38A18E302C942D87003ADC62 /* DeepLAPI.swift */,
+				38A18E382C943D1F003ADC62 /* BaiduAPI.swift */,
 			);
 			path = APIs;
 			sourceTree = "<group>";
@@ -298,6 +304,7 @@
 				38A18E202C93535C003ADC62 /* TranslatorFactory.swift in Sources */,
 				38A18E312C942D87003ADC62 /* DeepLAPI.swift in Sources */,
 				196FC3D42B611BA40066D068 /* FileSettings.swift in Sources */,
+				38A18E3B2C943EF0003ADC62 /* BaiduTranslator.swift in Sources */,
 				196D574D2B6FB0C700B2F265 /* ItemStateView.swift in Sources */,
 				197E64602B7461E6008251BE /* WindowDelegate.swift in Sources */,
 				38A18E272C942B36003ADC62 /* API.swift in Sources */,
@@ -305,6 +312,7 @@
 				387218C02C89939B0036DB4E /* TranslatorError.swift in Sources */,
 				38A18E2E2C942C8F003ADC62 /* GoogleAPI.swift in Sources */,
 				190A009E2B63FCCF009FBAED /* SettingsView.swift in Sources */,
+				38A18E392C943D1F003ADC62 /* BaiduAPI.swift in Sources */,
 				19CE60682BF3A7C600CD190E /* TranslationStatus.swift in Sources */,
 				19ABC3C92B5BA17C009568D2 /* ContentView.swift in Sources */,
 				196D574B2B6F72B600B2F265 /* LocalizeItem.swift in Sources */,

@@ -12,6 +12,8 @@ struct SettingsView: View {
     @AppStorage(UserDefaults.Keys.googleTranslateAPIKey) var googleTranslateAPIKey = ""
     @AppStorage(UserDefaults.Keys.deeplAPIKey) var deeplAPIKey = ""
     @AppStorage(UserDefaults.Keys.translationService) var translateService: TranslateService = .google
+    @AppStorage(UserDefaults.Keys.baiduAppID) var baiduAppID = ""
+    @AppStorage(UserDefaults.Keys.baiduAPIKey) var baiduAPIKey = ""
     
     var body: some View {
         Form {
@@ -23,6 +25,8 @@ struct SettingsView: View {
             }
             TextField("Google Translate API Key", text: $googleTranslateAPIKey)
             TextField("DeepL API Key", text: $deeplAPIKey)
+            TextField("Baidu App ID", text: $baiduAppID)
+            TextField("Baidu API Key", text: $baiduAPIKey)
         }
         .padding()
         .frame(width: 500, height: 250)
