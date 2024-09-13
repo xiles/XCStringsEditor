@@ -111,6 +111,9 @@
     "All Items" : {
 
     },
+    "API Key must be set in settings to use this function." : {
+
+    },
     "Apple TV" : {
 
     },
@@ -244,9 +247,6 @@
 
     },
     "Google Translate API Key" : {
-
-    },
-    "Google Translate API Key must be set in settings to use this function." : {
 
     },
     "Greek" : {
