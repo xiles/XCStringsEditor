@@ -249,6 +249,8 @@ struct XCStringEditorApp: App {
         
         Settings {
             SettingsView()
+                .environment(appModel)
+
         }
     }
 }
