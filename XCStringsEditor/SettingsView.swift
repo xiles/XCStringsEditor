@@ -23,10 +23,15 @@ struct SettingsView: View {
                         .tag(option)
                 }
             }
-            TextField("Google Translate API Key", text: $googleTranslateAPIKey)
-            TextField("DeepL API Key", text: $deeplAPIKey)
-            TextField("Baidu App ID", text: $baiduAppID)
-            TextField("Baidu API Key", text: $baiduAPIKey)
+            switch translateService {
+            case .google:
+                TextField("Google Translate API Key", text: $googleTranslateAPIKey)
+            case .deepL:
+                TextField("DeepL API Key", text: $deeplAPIKey)
+            case .baidu:
+                TextField("Baidu App ID", text: $baiduAppID)
+                TextField("Baidu API Key", text: $baiduAPIKey)
+            }
         }
         .padding()
         .frame(width: 500, height: 250)
