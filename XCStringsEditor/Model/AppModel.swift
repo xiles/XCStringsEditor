@@ -105,12 +105,8 @@ class AppModel {
     
     var showAPIKeyAlert: Bool = false
     var isLoading: Bool = false
-    var translator = GoogleTranslator()
-
+    var translator = TranslatorFactory.translator
     init() {
-        GoogleTranslate.shared.configure(apiKey: UserDefaults.standard.googleTranslateAPIKey)
-        DeepL.shared.configure(apiKey: UserDefaults.standard.deeplAPIKey)
-        
         translateLaterItemsHidden = UserDefaults.standard.bool(forKey: "TranslateLaterItemsHidden")
         staleItemsHidden = UserDefaults.standard.bool(forKey: "StaleItemsHidden")
         dontTranslateItemsHidden = UserDefaults.standard.bool(forKey: "DontTranslateItemsHidden")
@@ -702,30 +698,57 @@ class AppModel {
     
     func translate(ids: Set<LocalizeItem.ID>? = nil) async {
         isLoading = true
+        let itemIDs = ids ?? self.selected
         
-        switch UserDefaults.standard.translationService {
-        case .google:
-            await translateByGoogle(ids: ids)
-        case .deepL:
-            await translateByDeepL(ids: ids)
+        for itemID in itemIDs {
+            guard let item = self.item(with: itemID), let sourceLanguage = xcstrings?.sourceLanguage else {
+                continue
+            }
+            var translation: String? = nil
+            var reverseTranslation: String? = nil
+            let language = item.language
+            do{
+                translation = try await translator.translate(.init(text: item.sourceString, source: sourceLanguage.code, target: language.code))
+                if let translation {
+                    reverseTranslation = try await translator.translate(.init(text: translation, source: language.code, target: sourceLanguage.code))
+                    self.updateTranslation(for: itemID, with: translation, reverseTranslation: reverseTranslation)
+                }
+            }catch{
+                if error as? TranslatorError == TranslatorError.invalidAPI {
+                    showAPIKeyAlert = true
+                } else {
+                    print("Failed to translate", error)
+                }
+            }
         }
-//        reloadData()
-        
         isLoading = false
     }
     
     func reverseTranslate(ids: Set<LocalizeItem.ID>? = nil) {
         isLoading = true
-        
-        switch UserDefaults.standard.translationService {
-        case .google:
-            reverseTranslateByGoogle(ids: ids)
-        case .deepL:
-            reverseTranslateByDeepL(ids: ids)
+        let itemIDs = ids ?? self.selected
+        for itemID in itemIDs {
+            guard
+                let item = self.item(with: itemID),
+                let translation = item.translation, translation.isEmpty == false
+            else {
+                continue
+            }
+            Task{
+                do {
+                    let reverseTranslation = try await translator.translate(.init(text: translation, source: item.language.code, target: xcstrings?.sourceLanguage.code ?? "en"))
+                    item.reverseTranslation = reverseTranslation
+                }
+                catch {
+                    if error as? TranslatorError == TranslatorError.invalidAPI {
+                        showAPIKeyAlert = true
+                    } else {
+                        print("Failed to reverse translate", error)
+                    }
+                }
+            }
+            isLoading = false
         }
-//        reloadData()
-        
-        isLoading = false
     }
 
     func markNeedsReview(ids: Set<LocalizeItem.ID>? = nil) {
@@ -1031,4 +1054,13 @@ class AppModel {
         }
         return FileSettings.load(fileURL: settingsFileURL)
     }
+    func detectLanguage(text: String) async -> String? {
+        do {
+            let languages = try await translator.detect(text: text)
+            return languages.first?.language
+        } catch {
+            return nil
+        }
+    }
+    
 }

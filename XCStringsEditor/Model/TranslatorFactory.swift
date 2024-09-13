@@ -7,18 +7,16 @@
 
 import Foundation
 final class TranslatorFactory {
-    let googleTranslator = GoogleTranslator()
-    
-     func makeTranslator() -> Translator {
-        return GoogleTranslator()
-    }
-     func setAPIKey(_ key: String,to service: TranslateService) {
-        switch service {
-        case .google:
-            googleTranslator.translateAPI.apiKey = key
-        default:
-            break
+    static private let googleTranslator = GoogleTranslator()
+    static private let deepLTranslator = DeepLTranslator()
+    static var translator:any Translator{
+        get{
+            switch UserDefaults.standard.translationService {
+            case .google:
+                return googleTranslator
+            case .deepL:
+                return deepLTranslator
+            }
         }
     }
-    
 }

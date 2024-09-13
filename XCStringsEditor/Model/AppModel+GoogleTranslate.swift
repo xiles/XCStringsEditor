@@ -11,51 +11,6 @@ import Foundation
 
 extension AppModel {
     
-    func translateByGoogle(ids: Set<LocalizeItem.ID>? = nil) async {
-        guard GoogleTranslate.shared.isAvailable == true else {
-            showAPIKeyAlert = true
-            return
-        }
-        
-        let itemIDs = ids ?? self.selected
-        
-        for itemID in itemIDs {
-            guard let item = self.item(with: itemID) else {
-                continue
-            }
-            
-            let (translation, reverseTranslation) = await self.translateByGoogle(text: item.sourceString, language: item.language)
-            if let translation {
-                self.updateTranslation(for: itemID, with: translation, reverseTranslation: reverseTranslation)
-            }
-        }
-
-    }
-    
-
-    func reverseTranslateByGoogle(ids: Set<LocalizeItem.ID>? = nil) {
-        guard GoogleTranslate.shared.isAvailable == true else {
-            showAPIKeyAlert = true
-            return
-        }
-
-        let itemIDs = ids ?? self.selected
-
-        Task {
-            for itemID in itemIDs {
-                guard
-                    let item = self.item(with: itemID),
-                    let translation = item.translation, translation.isEmpty == false
-                else {
-                    continue
-                }
-                
-                let reverseTranslation = await self.translateByGoogle(text: translation, from: item.language, to: xcstrings?.sourceLanguage ?? .english)
-                item.reverseTranslation = reverseTranslation
-            }
-        }
-    }
-    
     func detectLanguage() {
 //        Task {
 //            for id in self.selected {
@@ -80,7 +35,7 @@ extension AppModel {
 
 
     
-    private func translateByGoogle(text: String, language: Language) async -> (String?, String?) {
+    private func translate(text: String, language: Language) async -> (String?, String?) {
         guard let xcstrings else {
             return (nil, nil)
         }
@@ -90,7 +45,6 @@ extension AppModel {
             
             let translation = try await translator.translate(text: text, source: sourceLanguage.code, target: language.code)
             let reverseTranslation = try await translator.translate(text: translation, source: language.code, target: sourceLanguage.code)
-            
             return (translation, reverseTranslation)
             
         } catch {
@@ -98,25 +52,5 @@ extension AppModel {
         }
     }
     
-    
-    private func translateByGoogle(text: String, from sourceLanguage: Language, to targetLanguage: Language) async -> String? {
-        do {
-            let translation = try await GoogleTranslate.shared.translate(text, source: sourceLanguage.code, target: targetLanguage.code)
-            return translation
-            
-        } catch {
-            return nil
-        }
-    }
-    
-    
-    func detectLanguage(text: String) async -> String? {
-        do {
-            let languages = try await translator.detect(text: text)
-            return languages.first?.language
-        } catch {
-            return nil
-        }
-    }
-    
+
 }

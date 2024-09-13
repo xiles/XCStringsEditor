@@ -1,23 +1,15 @@
 //
-//  Translator.swift
+//  GoogleTranslator.swift
 //  XCStringsEditor
 //
-//  Created by 王培屹 on 5/9/24.
+//  Created by 王培屹 on 13/9/24.
 //
 
 import Foundation
-protocol Translator{
-    var translateAPI: TranslateAPI {get set}
-    func translate(text:String,source: String, target: String, format: String, model: String) async throws -> String
-    func detect(text:String) async throws -> [Detection]
-    func languages(model:String,target:String) async throws ->[SupportLanguage]
-    
-}
 class GoogleTranslator:Translator{
-    var translateAPI: any TranslateAPI = GoogleTranslateAPI()
-    func translate(text: String, source: String, target: String, format: String = "text", model: String = "base") async throws -> String {
-        let result:[String:Any] = try await NetworkManager.request(endpoint:
-                                    translateAPI.translate(text: text, source: source, target: target, format: format, model: model))
+    let translateAPI: any TranslateAPI = GoogleTranslateAPI()
+    func translate(_ inputModel:InputModel) async throws -> String {
+        let result:[String:Any] = try await NetworkManager.request(endpoint:translateAPI.translate(inputModel))
         guard
             let d = result["data"] as? [String: Any],
             let translations = d["translations"] as? [[String: String]],
@@ -31,7 +23,7 @@ class GoogleTranslator:Translator{
     }
     
     func detect(text: String) async throws -> [Detection] {
-        if let api = try translateAPI.detect(text: text){
+        if let api = try translateAPI.detect(text: text),false{
             let result:[String:Any] = try await NetworkManager.request(endpoint: api)
             guard
                 let d = result["data"] as? [String: Any],
