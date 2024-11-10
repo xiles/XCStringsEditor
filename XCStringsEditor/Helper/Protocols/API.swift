@@ -28,6 +28,11 @@ protocol API {
     var parameters: [URLQueryItem] { get }
 // "GET"
     var method: HTTPMethod { get }
+    /// http body
+    var body:Data? { get }
+    /// http headers
+    var headers:[String:String]? { get }
+    
     
 }
 

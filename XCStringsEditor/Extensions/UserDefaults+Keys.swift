@@ -15,12 +15,23 @@ extension UserDefaults {
         static var translationService = "TranslateService"
         static var baiduAPIKey = "BaiduAPIKey"
         static var baiduAppID = "BaiduAppID"
+        static var llmAPIKey = "LLMAPIKey"
+        static var llmURL = "LLMURL"
+        static var llmModel = "LLMModel"
     }
     
     var googleTranslateAPIKey: String {
         string(forKey: Keys.googleTranslateAPIKey) ?? ""
     }
-    
+    var llmAPIKey: String {
+        string(forKey: Keys.llmAPIKey) ?? ""
+    }
+    var llmURL: String {
+        string(forKey: Keys.llmURL) ?? ""
+    }
+    var llmModel: String {
+        string(forKey: Keys.llmModel) ?? ""
+    }
     var deeplAPIKey: String {
         string(forKey: Keys.deeplAPIKey) ?? ""
     }

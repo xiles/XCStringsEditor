@@ -32,6 +32,10 @@ struct DeepLTranslateAPI:TranslateAPI{
 }
 
 enum DeepLAPI: API {
+    var body: Data? { return  nil }
+    
+    var headers: [String : String]? { return nil }
+    
     
     case translate(input:InputModel,apiKey:String)
     var scheme: HTTPScheme{

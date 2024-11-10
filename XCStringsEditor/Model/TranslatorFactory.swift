@@ -16,6 +16,8 @@ final class TranslatorFactory {
                 return DeepLTranslator()
             case .baidu:
                 return BaiduTranslator()
+            case .llm:
+                return LLMTranslator()
             }
         }
     }

@@ -35,6 +35,9 @@ struct GoogleTranslateAPI: TranslateAPI {
 }
 
 enum GoogleAPI: API {
+    var body: Data? { return  nil }
+    
+    var headers: [String : String]? { return nil }
     case translate(input: InputModel,apiKey:String)
     case detect(text:String,apiKey:String)
     case languages(model:String,target:String,apiKey:String)

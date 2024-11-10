@@ -7,6 +7,7 @@
 
 import Foundation
 import NaturalLanguage
+import Translation
 final class LanguageRecognizer{
     static func detectLanguage(for text: String) -> [Detection]? {
         let recognizer = NLLanguageRecognizer()

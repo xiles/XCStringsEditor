@@ -11,6 +11,7 @@ enum TranslateService: String, CaseIterable, Identifiable, CustomStringConvertib
     case google
     case deepL
     case baidu
+    case llm
     
     var id: Self { self }
     
@@ -22,6 +23,8 @@ enum TranslateService: String, CaseIterable, Identifiable, CustomStringConvertib
             return "DeepL"
         case .baidu:
             return "Baidu"
+        case .llm:
+            return "LLM"
         }
     }
 }

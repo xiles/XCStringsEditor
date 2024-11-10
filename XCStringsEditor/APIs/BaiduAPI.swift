@@ -45,6 +45,9 @@ struct BaiduTranslateAPI:TranslateAPI{
     }
 }
 enum BaiduAPI: API {
+    var body: Data? { return  nil }
+    
+    var headers: [String : String]? { return nil }
     var method: HTTPMethod{
         HTTPMethod.get
     }

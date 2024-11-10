@@ -14,6 +14,9 @@ struct SettingsView: View {
     @AppStorage(UserDefaults.Keys.translationService) var translateService: TranslateService = .google
     @AppStorage(UserDefaults.Keys.baiduAppID) var baiduAppID = ""
     @AppStorage(UserDefaults.Keys.baiduAPIKey) var baiduAPIKey = ""
+    @AppStorage(UserDefaults.Keys.llmAPIKey) var llmAPIKey = ""
+    @AppStorage(UserDefaults.Keys.llmURL) var llmURL = ""
+    @AppStorage(UserDefaults.Keys.llmModel) var llmModel = ""
     
     var body: some View {
         Form {
@@ -31,6 +34,10 @@ struct SettingsView: View {
             case .baidu:
                 TextField("Baidu App ID", text: $baiduAppID)
                 TextField("Baidu API Key", text: $baiduAPIKey)
+            case .llm:
+                TextField("LLM API Key", text: $llmAPIKey)
+                TextField("LLM URL", text: $llmURL)
+                TextField("LLM Model", text: $llmModel)
             }
         }
         .padding()

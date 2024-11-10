@@ -25,6 +25,8 @@
 		19ABC3D82B5BA34C009568D2 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19ABC3D72B5BA34C009568D2 /* AppModel.swift */; };
 		19ABC3DA2B5C0E87009568D2 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 19ABC3D92B5C0E87009568D2 /* Localizable.xcstrings */; };
 		19CE60682BF3A7C600CD190E /* TranslationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19CE60672BF3A7C500CD190E /* TranslationStatus.swift */; };
+		3834A88E2CE0ECCE00754FCE /* LLMAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3834A88D2CE0ECCE00754FCE /* LLMAPI.swift */; };
+		3834A8902CE1090900754FCE /* LLMTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3834A88F2CE1090900754FCE /* LLMTranslator.swift */; };
 		387218BE2C8992F60036DB4E /* Translator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387218BD2C8992F60036DB4E /* Translator.swift */; };
 		387218C02C89939B0036DB4E /* TranslatorError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387218BF2C89939B0036DB4E /* TranslatorError.swift */; };
 		38A18E1A2C93414D003ADC62 /* Detection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A18E192C93414D003ADC62 /* Detection.swift */; };
@@ -65,6 +67,8 @@
 		19ABC3D72B5BA34C009568D2 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		19ABC3D92B5C0E87009568D2 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		19CE60672BF3A7C500CD190E /* TranslationStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TranslationStatus.swift; path = XCStringsEditor/TranslationStatus.swift; sourceTree = SOURCE_ROOT; };
+		3834A88D2CE0ECCE00754FCE /* LLMAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMAPI.swift; sourceTree = "<group>"; };
+		3834A88F2CE1090900754FCE /* LLMTranslator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMTranslator.swift; sourceTree = "<group>"; };
 		387218BD2C8992F60036DB4E /* Translator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translator.swift; sourceTree = "<group>"; };
 		387218BF2C89939B0036DB4E /* TranslatorError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslatorError.swift; sourceTree = "<group>"; };
 		38A18E192C93414D003ADC62 /* Detection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Detection.swift; sourceTree = "<group>"; };
@@ -203,6 +207,7 @@
 				38A18E282C942B85003ADC62 /* GoogleTranslator.swift */,
 				38A18E232C93EE36003ADC62 /* DeepLTranslator.swift */,
 				38A18E3A2C943EF0003ADC62 /* BaiduTranslator.swift */,
+				3834A88F2CE1090900754FCE /* LLMTranslator.swift */,
 			);
 			path = Translators;
 			sourceTree = "<group>";
@@ -213,6 +218,7 @@
 				38A18E2D2C942C8F003ADC62 /* GoogleAPI.swift */,
 				38A18E302C942D87003ADC62 /* DeepLAPI.swift */,
 				38A18E382C943D1F003ADC62 /* BaiduAPI.swift */,
+				3834A88D2CE0ECCE00754FCE /* LLMAPI.swift */,
 			);
 			path = APIs;
 			sourceTree = "<group>";
@@ -303,6 +309,7 @@
 				38A18E292C942B85003ADC62 /* GoogleTranslator.swift in Sources */,
 				38A18E202C93535C003ADC62 /* TranslatorFactory.swift in Sources */,
 				38A18E312C942D87003ADC62 /* DeepLAPI.swift in Sources */,
+				3834A88E2CE0ECCE00754FCE /* LLMAPI.swift in Sources */,
 				196FC3D42B611BA40066D068 /* FileSettings.swift in Sources */,
 				38A18E3B2C943EF0003ADC62 /* BaiduTranslator.swift in Sources */,
 				196D574D2B6FB0C700B2F265 /* ItemStateView.swift in Sources */,
@@ -327,6 +334,7 @@
 				38A18E242C93EE36003ADC62 /* DeepLTranslator.swift in Sources */,
 				19ABC3C72B5BA17C009568D2 /* XCStringEditorApp.swift in Sources */,
 				19ABC3D82B5BA34C009568D2 /* AppModel.swift in Sources */,
+				3834A8902CE1090900754FCE /* LLMTranslator.swift in Sources */,
 				38A18E332C943363003ADC62 /* InputModel.swift in Sources */,
 				38A18E1A2C93414D003ADC62 /* Detection.swift in Sources */,
 			);
