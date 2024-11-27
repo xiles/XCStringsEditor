@@ -10,6 +10,8 @@ import Foundation
 enum TranslateService: String, CaseIterable, Identifiable, CustomStringConvertible {
     case google
     case deepL
+    case baidu
+    case llm
     
     var id: Self { self }
     
@@ -19,6 +21,10 @@ enum TranslateService: String, CaseIterable, Identifiable, CustomStringConvertib
             return "Google Translate"
           case .deepL:
             return "DeepL"
+        case .baidu:
+            return "Baidu"
+        case .llm:
+            return "LLM"
         }
     }
 }

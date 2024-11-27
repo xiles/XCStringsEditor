@@ -8,10 +8,15 @@
 import SwiftUI
 
 struct SettingsView: View {
-    
+    @Environment(AppModel.self) private var appModel
     @AppStorage(UserDefaults.Keys.googleTranslateAPIKey) var googleTranslateAPIKey = ""
     @AppStorage(UserDefaults.Keys.deeplAPIKey) var deeplAPIKey = ""
     @AppStorage(UserDefaults.Keys.translationService) var translateService: TranslateService = .google
+    @AppStorage(UserDefaults.Keys.baiduAppID) var baiduAppID = ""
+    @AppStorage(UserDefaults.Keys.baiduAPIKey) var baiduAPIKey = ""
+    @AppStorage(UserDefaults.Keys.llmAPIKey) var llmAPIKey = ""
+    @AppStorage(UserDefaults.Keys.llmURL) var llmURL = ""
+    @AppStorage(UserDefaults.Keys.llmModel) var llmModel = ""
     
     var body: some View {
         Form {
@@ -21,11 +26,25 @@ struct SettingsView: View {
                         .tag(option)
                 }
             }
-            TextField("Google Translate API Key", text: $googleTranslateAPIKey)
-            TextField("DeepL API Key", text: $deeplAPIKey)
+            switch translateService {
+            case .google:
+                TextField("Google Translate API Key", text: $googleTranslateAPIKey)
+            case .deepL:
+                TextField("DeepL API Key", text: $deeplAPIKey)
+            case .baidu:
+                TextField("Baidu App ID", text: $baiduAppID)
+                TextField("Baidu API Key", text: $baiduAPIKey)
+            case .llm:
+                TextField("LLM API Key", text: $llmAPIKey)
+                TextField("LLM URL", text: $llmURL)
+                TextField("LLM Model", text: $llmModel)
+            }
         }
         .padding()
         .frame(width: 500, height: 250)
+        .onChange(of: translateService) { oldValue, newValue in
+            appModel.translator = TranslatorFactory.translator
+        }
     }
 }
 
