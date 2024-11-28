@@ -54,6 +54,7 @@ class AppModel {
     var currentLanguage: Language = .english {
         didSet {
             selected.removeAll()
+            
             reloadData()
             
             settings.lastLanguage = currentLanguage.code
@@ -70,7 +71,7 @@ class AppModel {
     var searchText: String = "" {
         didSet {
             // TODO: debounce
-            reloadData()
+            localizeItems = filteredItems()
         }
     }
     var isModified: Bool = false
@@ -83,25 +84,25 @@ class AppModel {
 //    private var cancellables = Set<AnyCancellable>()
     var filter: Filter = Filter() {
         didSet {
-            reloadData()
+            localizeItems = filteredItems()
         }
     }
     var translateLaterItemsHidden: Bool = false {
         didSet {
             UserDefaults.standard.set(translateLaterItemsHidden, forKey: "TranslateLaterItemsHidden")
-            reloadData()
+            localizeItems = filteredItems()
         }
     }
     var staleItemsHidden: Bool = false {
         didSet {
             UserDefaults.standard.set(staleItemsHidden, forKey: "StaleItemsHidden")
-            reloadData()
+            localizeItems = filteredItems()
         }
     }
     var dontTranslateItemsHidden: Bool = false {
         didSet {
             UserDefaults.standard.set(dontTranslateItemsHidden, forKey: "DontTranslateItemsHidden")
-            reloadData()
+            localizeItems = filteredItems()
         }
     }
 
@@ -212,30 +213,39 @@ class AppModel {
             return
         }
         
-        updateAllLocalizedItems()
+        isLoading = true
         
-        guard let xcstrings = updateXCStrings() else {
-            return
-        }
-        
-        do {
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+        Task {
+            updateAllLocalizedItems()
+
+            defer {
+                isLoading = false
+            }
+
+            guard let xcstrings = updateXCStrings() else {
+                return
+            }
             
-            let data = try encoder.encode(xcstrings)
-                        
-//            let outputURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!.appendingPathComponent("modified.xcstrings", conformingTo: .fileURL)
-            let outputURL = fileURL
-            
-            try data.write(to: outputURL, options: [.atomic])
-            isModified = false
-            
-            clearModifiedMark()
-            
-            reloadData()
-            
-        } catch {
-            print("Save failed", error)
+            do {
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+                
+                let data = try encoder.encode(xcstrings)
+                
+                //            let outputURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!.appendingPathComponent("modified.xcstrings", conformingTo: .fileURL)
+                let outputURL = fileURL
+                
+                try data.write(to: outputURL, options: [.atomic])
+         
+                Task { @MainActor in
+                    isModified = false
+                    
+                    clearModifiedMark()
+                }
+                
+            } catch {
+                logger.error("Save failed. \(error)")
+            }
         }
     }
     
@@ -334,14 +344,10 @@ class AppModel {
         allLocalizeItems = allItems
     }
 
-    func reloadData() {
+    private func filteredItems() -> [LocalizeItem] {
         // TODO: filter sub items
-        
-//        print(#function, currentLanguage)
-        
-        updateAllLocalizedItems()
 
-        localizeItems = allLocalizeItems.filter {
+        return allLocalizeItems.filter {
             if $0.language != currentLanguage {
                 return false
             }
@@ -439,8 +445,25 @@ class AppModel {
             return true
         }
         .sorted(using: sortOrder)
+
+    }
+    
+    func reloadData() {
+        isLoading = true
         
-        print("reloadData", localizeItems.count)
+        Task {
+            updateAllLocalizedItems()
+            let items = filteredItems()
+            
+            Task { @MainActor in
+                localizeItems = items
+                isLoading = false
+                
+#if DEBUG
+                logger.debug("reloadData \(items.count)")
+#endif
+            }
+        }
     }
     
     private func languages(in xcstrings: XCStrings) -> [Language] {
@@ -803,7 +826,7 @@ class AppModel {
                 item.isModified = false
             }
         }
-        reloadData()
+        localizeItems = filteredItems()
     }
     
     /// Translates the specified items asynchronously.
@@ -1094,7 +1117,7 @@ class AppModel {
 
         if allLanguages {
             self.allLocalizeItems = items
-            reloadData()
+            self.localizeItems = self.filteredItems()
         } else {
             self.localizeItems = items
         }
@@ -1120,8 +1143,7 @@ class AppModel {
         removeModifiedMark(items: &items)
         
         self.allLocalizeItems = items
-        
-        reloadData()
+        self.localizeItems = self.filteredItems()
     }
 
     
