@@ -49,7 +49,7 @@ struct ContentView: View {
         
     var body: some View {
         @Bindable var appModel = appModel
-        
+
         NavigationStack {
             Table(selection: $appModel.selected, sortOrder: $appModel.sortOrder) {
                 // Key
@@ -85,21 +85,18 @@ struct ContentView: View {
                                 .lineLimit(nil)
                                 .focused($focusedField, equals: .translation)
                                 .onSubmit {
-                                    if let editingID = appModel.editingID {
-                                        appModel.updateTranslation(for: editingID, with: translation)
-                                        appModel.editingID = nil
-                                        isEditing = false
-                                    }
+                                    focusedField = .table
                                 }
                                 .onAppear {
                                     logger.debug("textfield appear")
                                     
                                     self.translation = item.translation ?? ""
-                                    focusedField = .translation
+                                    DispatchQueue.main.async {
+                                        focusedField = .translation
+                                    }
                                 }
                         }
                     }
-                    .id(item.id)
                 }
                 
                 // Reverse Translation
@@ -125,6 +122,7 @@ struct ContentView: View {
                 }
             }
             .focused($focusedField, equals: .table)
+            .searchable(text: $appModel.searchText)
             .navigationTitle(appModel.title ?? "XCStringsEditor")
             .onAppear {
                 startMonitorKeyboardEvent()
@@ -137,9 +135,6 @@ struct ContentView: View {
                     return true
                 }
             }
-            .onChange(of: appModel.sortOrder, { oldValue, newValue in
-                appModel.sort(using: newValue)
-            })
             .toolbar {
                 ToolbarItemGroup(placement: .navigation) {
                     if appModel.isModified {
@@ -152,6 +147,10 @@ struct ContentView: View {
                 if appModel.languages.isEmpty == false {
                     ToolbarItemGroup(placement: .primaryAction) {
                         Spacer()
+                        
+                        if appModel.localizeItems.count > 0 {
+                            Text("\(appModel.localizeItems.count) items")
+                        }
                         
                         Picker("Language", selection: $appModel.currentLanguage) {
                             ForEach(appModel.languages) { language in
@@ -204,33 +203,23 @@ struct ContentView: View {
                     
             }
             .toolbarRole(.editor)
-            .searchable(text: $appModel.searchText)
+            .onChange(of: appModel.sortOrder, { oldValue, newValue in
+                appModel.sort(using: newValue)
+            })
             .onChange(of: focusedField) { oldValue, newValue in
                 if oldValue == .translation && newValue != .translation {
                     logger.debug("textfield focusout")
 
-                    var oldSelected: Set<LocalizeItem.ID>?
-                    if let editingID = appModel.editingID {
-                        logger.debug("textfield focusout update")
-                        
-                        // update editing item
-                        appModel.updateTranslation(for: editingID, with: translation)
-                        appModel.editingID = nil
-                        isEditing = false
-                        
-                        oldSelected = appModel.selected
-                        appModel.selected = []
-                    }
-
+                    let oldSelected = appModel.selected
+                    endEditing()
+                    
                     if let nextEditingItem {
                         self.nextEditingItem = nil
                         DispatchQueue.main.async {
                             editItem(nextEditingItem)
                         }
                     } else {
-                        if let oldSelected {
-                            appModel.selected = oldSelected
-                        }
+                        appModel.selected = oldSelected
                     }
                 }
             }
@@ -251,6 +240,19 @@ struct ContentView: View {
             
         } // NavigationStack
         .modifier(ActivityIndicatorModifier(isPresented: $appModel.isLoading))
+    }
+    
+    private func endEditing(updateTranslation: Bool = true) {
+#if DEBUG
+        logger.debug("endEditing")
+#endif
+        // update editing item
+        if let editingID = appModel.editingID, updateTranslation == true {
+            appModel.updateTranslation(for: editingID, with: translation)
+        }
+        
+        appModel.editingID = nil
+        isEditing = false
     }
     
     private func keyColumnView(item: LocalizeItem) -> some View {
@@ -358,12 +360,20 @@ struct ContentView: View {
     private func startMonitorKeyboardEvent() {
         NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             let modifierFlags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
-            if modifierFlags == [] && event.keyCode == 36/* Enter */ {
-                if appModel.editingID == nil {
-                    if let itemID = appModel.selected.first, let item = appModel.item(with: itemID) {
-                        editItem(item)
+            if modifierFlags == [] {
+                if event.keyCode == 36/* Enter */ {
+                    if appModel.editingID == nil {
+                        if let itemID = appModel.selected.first, let item = appModel.item(with: itemID) {
+                            editItem(item)
+                        }
+                        return nil  // Intercept the event
                     }
-                    return nil  // Intercept the event
+                } else if event.keyCode == 53/* Esc */ {
+                    if focusedField == .translation {
+                        endEditing(updateTranslation: false)
+                        focusedField = .table
+                        return nil
+                    }
                 }
             } else if modifierFlags == [.command] && event.characters == "f" {
                 focusedField = .search
@@ -408,8 +418,8 @@ struct ContentView: View {
         guard item.children == nil else {
             return
         }
-        appModel.editingID = item.id
         appModel.selected = [item.id]
+        appModel.editingID = item.id
         isEditing = true
     }
     
