@@ -81,7 +81,7 @@ struct ContentView: View {
                         
                         if isEditing && appModel.editingID == item.id {
                             // Editing TextField
-                            TextField("", text: $translation, axis: .vertical)
+                            TextField(item.sourceString, text: $translation, axis: .vertical)
                                 .lineLimit(nil)
                                 .focused($focusedField, equals: .translation)
                                 .onSubmit {
