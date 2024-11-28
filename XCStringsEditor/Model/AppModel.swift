@@ -796,14 +796,15 @@ class AppModel {
         }
         item.isModified = true
         item.needsReview = false
-        isModified = true
 
         if translation.isEmpty == false {
             if let reverseTranslation {
                 item.reverseTranslation = reverseTranslation
             }
-            markTranslateLater(for: item, value: false)
+            item.translateLater = false
+            settings.removeTranslateLaterItemID(item.id)
         }
+        isModified = true
     }
     
     func updateTranslation(for id: String, with translation: String, reverseTranslation: String? = nil) {
