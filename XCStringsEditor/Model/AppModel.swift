@@ -1028,14 +1028,11 @@ class AppModel {
         
         updateItem(updatedItem)
 
+        // update settings (translateLater items)
         if value {
-            if settings.translateLater.contains(item.id) == false {
-                settings.translateLater.append(item.id)
-            }
+            settings.appendTranslateLaterItemID(item.id)
         } else {
-            if let index = settings.translateLater.firstIndex(of: item.id) {
-                settings.translateLater.remove(at: index)
-            }
+            settings.removeTranslateLaterItemID(item.id)
         }
     }
     
@@ -1067,13 +1064,9 @@ class AppModel {
             }
             
             if value {
-                if settings.needsWork.contains(itemID) == false {
-                    settings.needsWork.append(itemID)
-                }
+                settings.appendNeedsWorkItemID(itemID)
             } else {
-                if let index = settings.needsWork.firstIndex(of: itemID) {
-                    settings.needsWork.remove(at: index)
-                }
+                settings.removeNeedsWorkItemID(itemID)
             }
         }
 
@@ -1109,13 +1102,9 @@ class AppModel {
                 }
                 
                 if value {
-                    if settings.needsWork.contains(itemID) == false {
-                        settings.needsWork.append(itemID)
-                    }
+                    settings.appendNeedsWorkItemID(itemID)
                 } else {
-                    if let index = settings.needsWork.firstIndex(of: itemID) {
-                        settings.needsWork.remove(at: index)
-                    }
+                    settings.removeNeedsWorkItemID(itemID)
                 }
             }
         }

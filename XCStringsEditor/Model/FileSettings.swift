@@ -12,8 +12,8 @@ import Foundation
 struct FileSettings: Codable {
     var lastLanguage: String = "en"
 
-    var translateLater: [String] = []
-    var needsWork: [String] = []
+    var translateLater: Set<String> = []
+    var needsWork: Set<String> = []
     
     static func load(fileURL: URL) -> FileSettings {
         guard let data = try? Data(contentsOf: fileURL) else {
@@ -29,5 +29,21 @@ struct FileSettings: Codable {
         if let data = try? encoder.encode(self) {
             try? data.write(to: fileURL)
         }
+    }
+    
+    mutating func appendTranslateLaterItemID(_ id: String) {
+        translateLater.insert(id)
+    }
+    
+    mutating func removeTranslateLaterItemID(_ id: String) {
+        translateLater.remove(id)
+    }
+    
+    mutating func appendNeedsWorkItemID(_ id: String) {
+        needsWork.insert(id)
+    }
+    
+    mutating func removeNeedsWorkItemID(_ id: String) {
+        needsWork.remove(id)
     }
 }
