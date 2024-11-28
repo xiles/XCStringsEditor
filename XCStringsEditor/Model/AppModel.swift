@@ -53,6 +53,7 @@ class AppModel {
     var baseLanguage: Language = .english
     var currentLanguage: Language = .english {
         didSet {
+            selected.removeAll()
             reloadData()
             
             settings.lastLanguage = currentLanguage.code
