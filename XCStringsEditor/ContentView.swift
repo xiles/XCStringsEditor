@@ -149,7 +149,16 @@ struct ContentView: View {
                         Spacer()
                         
                         if appModel.localizeItems.count > 0 {
-                            Text("\(appModel.localizeItems.count) items")
+                            let translatedCount = appModel.localizeItems.filter { $0.isTranslated }.count
+                            let progress: Float = Float(translatedCount) / Float(appModel.localizeItems.count)
+                            HStack {
+                                ProgressView(value: progress, total: 1.0)
+                                    .frame(width: 90)
+                                    .tint(progressColor(progress))
+                                Text(verbatim: "\(progress.formatted(.percent.precision(.fractionLength(1))))")
+                                    .font(.caption)
+                            }
+                            .help("\(translatedCount) / \(appModel.localizeItems.count)")
                         }
                         
                         Picker("Language", selection: $appModel.currentLanguage) {
@@ -253,6 +262,18 @@ struct ContentView: View {
         
         appModel.editingID = nil
         isEditing = false
+    }
+    
+    private func progressColor(_ progress: Float) -> Color {
+        if progress > 0.9 {
+            return .green
+        } else if progress > 0.7 {
+            return .blue
+        } else if progress > 0.5 {
+            return .orange
+        } else {
+            return .red
+        }
     }
     
     private func keyColumnView(item: LocalizeItem) -> some View {

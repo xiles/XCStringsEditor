@@ -49,11 +49,7 @@ struct LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
         } else if needsReview {
             return .needsReview
         } else {
-            if contains(matching: { $0.translation == nil }) {
-                return .new
-            } else {
-                return .translated
-            }
+            return isTranslated ? .translated : .new
         }
     }
     
@@ -66,6 +62,10 @@ struct LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
 
     var isModified: Bool = false
 //    var isEditing: Bool = false
+
+    var isTranslated: Bool {
+        return contains(matching: { $0.translation == nil }) == false
+    }
 
     var translationStatus: TranslationStatus {
         guard let _ = translation else { return .missingTranslation }
