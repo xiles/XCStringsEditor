@@ -452,23 +452,6 @@ class AppModel {
         return Array<Language>(result)
     }
 
-    func setEditing(id: LocalizeItem.ID) {
-        // TODO: children 안에 있는거도 찾아서...
-        if let item = self.item(with: id) {
-            editingID = item.id
-        }
-//        
-//        
-//        if let editingIndex = localizeItems.firstIndex(where: { $0.isEditing }) {
-//            localizeItems[editingIndex].isEditing = false
-//        }
-//
-//        if let index = localizeItems.firstIndex(where: { $0.id == id }) {
-//            localizeItems[index].isEditing = true
-//            editingID = id
-//        }
-    }
-    
     func sort(using comparator: [KeyPathComparator<LocalizeItem>]) {
         var comparator = comparator
         if comparator.count == 1 {
@@ -751,33 +734,7 @@ class AppModel {
         }
         return nil
     }
-
         
-//    private func updateItemValue(for id: LocalizeItem.ID, updateHandler: (LocalizeItem) -> LocalizeItem?) {
-//        let components = id.components(separatedBy: ID_DIVIDER)
-//        let key = components[0]
-//        let subcomponents = components[1].components(separatedBy: "/")
-//        let langCode = subcomponents[0]
-//        
-//        let baseID = "\(key)\(ID_DIVIDER)\(langCode)"
-//
-//        if let index = localizeItems.firstIndex(where: { $0.id == baseID }) {
-//            if baseID == id {
-//                // found
-//                if let modifiedItem = updateHandler(localizeItems[index]) {
-//                    localizeItems[index] = modifiedItem
-//                }
-//            } else {
-//                // children
-//                if localizeItems[index].children != nil {
-//                    for i in 0 ..< localizeItems[index].children!.count {
-//                        localizeItems[index].children![i].update
-//                    }
-//                }
-//            }
-//        }
-//    }
-    
     // MARK: - Editing
     
     private func updateTranslation(for item: inout LocalizeItem, with translation: String, reverseTranslation: String? = nil) {
