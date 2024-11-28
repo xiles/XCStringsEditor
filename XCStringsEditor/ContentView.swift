@@ -151,6 +151,7 @@ struct ContentView: View {
                         if appModel.localizeItems.count > 0 {
                             let translatedCount = appModel.localizeItems.filter { $0.isTranslated }.count
                             let progress: Float = Float(translatedCount) / Float(appModel.localizeItems.count)
+                            let tooltip: String = "\(translatedCount) / \(appModel.localizeItems.count)"
                             HStack {
                                 ProgressView(value: progress, total: 1.0)
                                     .frame(width: 90)
@@ -158,7 +159,7 @@ struct ContentView: View {
                                 Text(verbatim: "\(progress.formatted(.percent.precision(.fractionLength(1))))")
                                     .font(.caption)
                             }
-                            .help("\(translatedCount) / \(appModel.localizeItems.count)")
+                            .help(tooltip)
                         }
                         
                         Picker("Language", selection: $appModel.currentLanguage) {

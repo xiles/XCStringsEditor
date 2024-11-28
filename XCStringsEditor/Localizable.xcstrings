@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
-
-    },
     "%lld Item(s)" : {
       "extractionState" : "stale",
       "localizations" : {
