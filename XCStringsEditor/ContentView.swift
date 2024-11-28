@@ -313,7 +313,9 @@ struct ContentView: View {
             }
         }
         Button("Reverse Translate") {
-            appModel.reverseTranslate(ids: itemIDs)
+            Task {
+                await appModel.reverseTranslate(ids: itemIDs)
+            }
         }
 
         Divider()

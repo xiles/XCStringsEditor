@@ -207,7 +207,9 @@ struct XCStringEditorApp: App {
                 .disabled(appModel.selected.isEmpty)
 
                 Button("Reverse Translate") {
-                    appModel.reverseTranslate()
+                    Task {
+                        await appModel.reverseTranslate()
+                    }
                 }
                 .keyboardShortcut("t", modifiers: [.shift, .option, .command]) // Cmd + Option + Shift + T
                 .disabled(appModel.selected.isEmpty)

@@ -8,6 +8,9 @@
 import Foundation
 import Combine
 import AppKit
+import OSLog
+
+fileprivate let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AppModel")
 
 struct Filter {
     var new: Bool = false
@@ -42,8 +45,10 @@ class AppModel {
     private(set) var title: String?
 
     private(set) var xcstrings: XCStrings?
-    private(set) var allLocalizeItems: [LocalizeItem] = []
     private(set) var languages: [Language] = []
+
+    @ObservationIgnored
+    private(set) var allLocalizeItems: [LocalizeItem] = []
     private(set) var localizeItems: [LocalizeItem] = []
     var baseLanguage: Language = .english
     var currentLanguage: Language = .english {
@@ -206,6 +211,8 @@ class AppModel {
             return
         }
         
+        updateAllLocalizedItems()
+        
         guard let xcstrings = updateXCStrings() else {
             return
         }
@@ -316,11 +323,23 @@ class AppModel {
         return xcstrings
     }
     
+    func updateAllLocalizedItems() {
+        var allItems = allLocalizeItems
+        for item in localizeItems {
+            if let index = allLocalizeItems.firstIndex(where: { $0.id == item.id }) {
+                allItems[index] = item
+            }
+        }
+        allLocalizeItems = allItems
+    }
+
     func reloadData() {
         // TODO: filter sub items
         
 //        print(#function, currentLanguage)
         
+        updateAllLocalizedItems()
+
         localizeItems = allLocalizeItems.filter {
             if $0.language != currentLanguage {
                 return false
@@ -488,7 +507,7 @@ class AppModel {
                         
                     } else if let deviceVariation = localization.deviceVariation {
                         // device varations
-                        let item = LocalizeItem(id: id, key: xcstring.key!, sourceString: "", comment: xcstring.comment, language: language, translation: nil, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: false, shouldTranslate: xcstring.shouldTranslate)
+                        var item = LocalizeItem(id: id, key: xcstring.key!, sourceString: "", comment: xcstring.comment, language: language, translation: nil, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: false, shouldTranslate: xcstring.shouldTranslate)
                         item.translateLater = settings.translateLater.contains(id)
                         item.needsWork = settings.needsWork.contains(id)
                         
@@ -523,7 +542,7 @@ class AppModel {
 
                 } else {
                     // not translated
-                    let item = LocalizeItem(id: id, key: xcstring.key!, sourceString: sourceString, comment: xcstring.comment, language: language, translation: nil, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: false, shouldTranslate: xcstring.shouldTranslate)
+                    var item = LocalizeItem(id: id, key: xcstring.key!, sourceString: sourceString, comment: xcstring.comment, language: language, translation: nil, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: false, shouldTranslate: xcstring.shouldTranslate)
                     item.translateLater = settings.translateLater.contains(id)
                     item.needsWork = settings.needsWork.contains(id)
                     localizeItems.append(item)
@@ -538,7 +557,7 @@ class AppModel {
         let needsReview = stringUnit.state == .needsReview
         let key = deviceType != nil ? deviceType!.localizedName : xcstring.key!
         
-        let item = LocalizeItem(id: id, key: key, sourceString: sourceString, comment: xcstring.comment, language: language, translation: stringUnit.value, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: needsReview, shouldTranslate: xcstring.shouldTranslate)
+        var item = LocalizeItem(id: id, key: key, sourceString: sourceString, comment: xcstring.comment, language: language, translation: stringUnit.value, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: needsReview, shouldTranslate: xcstring.shouldTranslate)
         item.translateLater = parentItem?.translateLater ?? settings.translateLater.contains(id)
         item.needsWork = parentItem?.needsWork ?? settings.needsWork.contains(id)
         item.deviceType = deviceType
@@ -549,7 +568,7 @@ class AppModel {
     private func buildPluralVarationItem(_ variation: [XCString.PluralType: XCString.Localization], id: String, sourceString: String, xcstring: XCString, sourceLanguage: Language, language: Language, deviceType: XCString.DeviceType? = nil) -> LocalizeItem {
         let key = deviceType != nil ? deviceType!.localizedName : xcstring.key!
         
-        let item = LocalizeItem(id: id, key: key, sourceString: "", comment: xcstring.comment, language: language, translation: nil, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: false, shouldTranslate: xcstring.shouldTranslate)
+        var item = LocalizeItem(id: id, key: key, sourceString: "", comment: xcstring.comment, language: language, translation: nil, isStale: xcstring.extractionState == .stale, translateLater: false, needsReview: false, shouldTranslate: xcstring.shouldTranslate)
         item.translateLater = settings.translateLater.contains(id)
         item.needsWork = settings.needsWork.contains(id)
         item.children = buildPluralVariationSubItems(variation, parentID: id, parent: item, sourceString: sourceString, xcstring: xcstring, sourceLanguage: sourceLanguage, language: language)
@@ -573,7 +592,7 @@ class AppModel {
                     }
                 }
                 
-                let subitem = LocalizeItem(id: subid, key: key.localizedName, sourceString: subSourceString, comment: nil, language: language, translation: stringUnit.value, isStale: false, translateLater: false, needsReview: needsReview, shouldTranslate: xcstring.shouldTranslate)
+                var subitem = LocalizeItem(id: subid, key: key.localizedName, sourceString: subSourceString, comment: nil, language: language, translation: stringUnit.value, isStale: false, translateLater: false, needsReview: needsReview, shouldTranslate: xcstring.shouldTranslate)
                 subitem.pluralType = key
                 subitem.parentID = parentID
                 subitem.translateLater = parent.translateLater
@@ -585,6 +604,114 @@ class AppModel {
         
         return subItems
     }
+
+//    func updateItem(with id: String, updateHandler: (inout LocalizeItem) -> Void) -> Bool {
+//
+//        if let updatedItems = update(items: )
+//    }
+//
+//    private func update(items: [LocalizeItem], by id: String, update: (inout LocalizeItem) -> Void) -> [LocalizeItem]? {
+//        var updatedItems = items
+//        for (index, item) in items.enumerated() {
+//            if item.id == id {
+//                // Modify the found item
+//                var updatedItem = item
+//                update(&updatedItem)
+//                updatedItems[index] = updatedItem
+//                return updatedItems
+//            } else if !item.subitems.isEmpty {
+//                // Recursively check and update in subitems
+//                if let updatedSubitems = update(items: item.subitems, by: id, update: update) {
+//                    var updatedItem = item
+//                    updatedItem.subitems = updatedSubitems
+//                    updatedItems[index] = updatedItem
+//                    return updatedItems
+//                }
+//            }
+//        }
+//        return nil
+//    }
+//
+//    func updateItemProperty(by id: String, update: (inout LocalizeItem) -> Void) -> Bool {
+//           // Update the main `items` array
+//           if let updatedItems = update(items: items, by: id, update: update) {
+//               items = updatedItems
+//               return true
+//           }
+//           return false
+//       }
+
+    func updateItem(with id: String, updateHandler: (inout LocalizeItem) -> Void) {
+        func update(items: inout [LocalizeItem]) {
+            for index in items.indices {
+                if items[index].id == id {
+                    var updatedItem = items[index]
+                    updateHandler(&updatedItem)
+                    items[index] = updatedItem
+                    return
+                }
+                if items[index].children != nil {
+                    update(items: &items[index].children!)
+                }
+            }
+        }
+        var items = self.localizeItems
+        update(items: &items)
+        self.localizeItems = items
+        
+        var allItems = self.allLocalizeItems
+        update(items: &allItems)
+        self.allLocalizeItems = allItems
+    }
+
+    func updateItem(with id: String, updateHandler: (inout LocalizeItem) async -> Void) async {
+        func update(items: inout [LocalizeItem]) async {
+            for index in items.indices {
+                if items[index].id == id {
+                    var updatedItem = items[index]
+                    await updateHandler(&updatedItem)
+                    items[index] = updatedItem
+                    return
+                }
+                if items[index].children != nil {
+                    await update(items: &items[index].children!)
+                }
+            }
+        }
+        var items = self.localizeItems
+        await update(items: &items)
+        
+        var allItems = self.allLocalizeItems
+        await update(items: &allItems)
+
+        Task { @MainActor in
+            self.localizeItems = items
+            self.allLocalizeItems = allItems
+        }
+    }
+    
+    // Update function for edited items
+    func updateItem(_ updatedItem: LocalizeItem) {
+        func update(items: inout [LocalizeItem]) {
+            for index in items.indices {
+                if items[index].id == updatedItem.id {
+                    items[index] = updatedItem
+                    return
+                }
+                if items[index].children != nil {
+                    update(items: &items[index].children!)
+                }
+            }
+        }
+        var items = self.localizeItems
+        update(items: &items)
+        self.localizeItems = items
+
+        var allItems = self.allLocalizeItems
+        update(items: &allItems)
+        self.allLocalizeItems = allItems
+    }
+    
     
     func item(with id: LocalizeItem.ID, in items: [LocalizeItem]? = nil) -> LocalizeItem? {
         let items = items ?? localizeItems
@@ -653,18 +780,15 @@ class AppModel {
     
     // MARK: - Editing
     
-    func updateTranslation(for id: String, with translation: String, reverseTranslation: String? = nil) {
-        guard 
-            let item = self.item(with: id),
-            item.translation != translation
-        else {
+    private func updateTranslation(for item: inout LocalizeItem, with translation: String, reverseTranslation: String? = nil) {
+        guard item.translation != translation else {
             return
         }
         
         if translation.isEmpty && item.key != "" && item.translation == nil {
             return
         }
-        
+
         if translation.isEmpty && item.key != "" {
             item.translation = nil
         } else {
@@ -681,60 +805,111 @@ class AppModel {
             markTranslateLater(for: item, value: false)
         }
     }
+    
+    func updateTranslation(for id: String, with translation: String, reverseTranslation: String? = nil) {
+        updateItem(with: id) { item in
+            guard item.translation != translation else {
+                return
+            }
+            
+            if translation.isEmpty && item.key != "" && item.translation == nil {
+                return
+            }
+
+            if translation.isEmpty && item.key != "" {
+                item.translation = nil
+            } else {
+                item.translation = translation
+            }
+            item.isModified = true
+            item.needsReview = false
+            isModified = true
+
+            if translation.isEmpty == false {
+                if let reverseTranslation {
+                    item.reverseTranslation = reverseTranslation
+                }
+                markTranslateLater(for: item, value: false)
+            }
+        }
+    }
 
     func clearTranslation(ids: Set<LocalizeItem.ID>? = nil) {
         let itemIDs = ids ?? self.selected
         
         for itemID in itemIDs {
-            guard let item = item(with: itemID) else {
-                continue
+            updateItem(with: itemID) { item in
+                item.translation = nil
+                item.reverseTranslation = nil
+                item.isModified = false
             }
-            item.translation = nil
-            item.reverseTranslation = nil
-            item.isModified = false
         }
         reloadData()
     }
     
+    /// Translates the specified items asynchronously.
+    ///
+    /// This function performs translations for each provided item ID or for all selected items if no IDs are passed.
+    /// The translation process includes translating the source string to the target language
+    /// and performing a reverse translation for verification.
+    /// If the translation fails, appropriate error handling is triggered.
+    ///
+    /// - Parameters:
+    ///   - ids: A set of `LocalizeItem.ID` representing the items to be translated. If `nil`, the selected items will be translated.
+    ///
+    /// - Precondition: The `sourceLanguage` must be available for translation to proceed.
+    ///
+    /// - Throws: This function does not throw errors but handles them internally (e.g., logs or updates UI).
     func translate(ids: Set<LocalizeItem.ID>? = nil) async {
+        guard let sourceLanguage = self.xcstrings?.sourceLanguage else {
+            return
+        }
+
         isLoading = true
         let itemIDs = ids ?? self.selected
-        
+
+        // TODO: Allow sending multiple translation requests simultaneously
         for itemID in itemIDs {
-            guard let item = self.item(with: itemID), let sourceLanguage = xcstrings?.sourceLanguage else {
-                continue
-            }
-            var translation: String? = nil
-            var reverseTranslation: String? = nil
-            let language = item.language
-            do{
-                translation = try await translator.translate(.init(text: item.sourceString, source: sourceLanguage.code, target: language.code))
-                if let translation {
-                    reverseTranslation = try await translator.translate(.init(text: translation, source: language.code, target: sourceLanguage.code))
-                    self.updateTranslation(for: itemID, with: translation, reverseTranslation: reverseTranslation)
-                }
-            }catch{
-                if error as? TranslatorError == TranslatorError.invalidAPI {
-                    showAPIKeyAlert = true
-                } else {
-                    print("Failed to translate", error)
+            await self.updateItem(with: itemID) { item in
+                // Ensure the source language is available
+                var translation: String? = nil
+                var reverseTranslation: String? = nil
+                let language = item.language
+                do {
+                    // Perform translation from source to target language
+                    translation = try await self.translator.translate(.init(text: item.sourceString, source: sourceLanguage.code, target: language.code))
+                    if let translation {
+                        // Perform reverse translation from target back to source language
+                        reverseTranslation = try await self.translator.translate(.init(text: translation, source: language.code, target: sourceLanguage.code))
+                        
+                        // Update the item's translation and reverse translation
+                        self.updateTranslation(for: &item, with: translation, reverseTranslation: reverseTranslation)
+                    }
+                } catch {
+                    // Handle errors during translation
+                    if error as? TranslatorError == TranslatorError.invalidAPI {
+                        self.showAPIKeyAlert = true // Notify the user to check API key
+                    } else {
+                        logger.error("Failed to translate. \(error)")
+                    }
                 }
             }
         }
         isLoading = false
     }
     
-    func reverseTranslate(ids: Set<LocalizeItem.ID>? = nil) {
+    func reverseTranslate(ids: Set<LocalizeItem.ID>? = nil) async {
         isLoading = true
         let itemIDs = ids ?? self.selected
+
+        // TODO: Allow sending multiple translation requests simultaneously
         for itemID in itemIDs {
-            guard
-                let item = self.item(with: itemID),
-                let translation = item.translation, translation.isEmpty == false
-            else {
-                continue
-            }
-            Task{
+            await updateItem(with: itemID) { item in
+                guard
+                    let translation = item.translation, translation.isEmpty == false
+                else {
+                    return
+                }
                 do {
                     let reverseTranslation = try await translator.translate(.init(text: translation, source: item.language.code, target: xcstrings?.sourceLanguage.code ?? "en"))
                     item.reverseTranslation = reverseTranslation
@@ -743,24 +918,23 @@ class AppModel {
                     if error as? TranslatorError == TranslatorError.invalidAPI {
                         showAPIKeyAlert = true
                     } else {
-                        print("Failed to reverse translate", error)
+                        logger.error("Failed to reverse translation. \(error)")
                     }
                 }
             }
-            isLoading = false
         }
+        isLoading = false
     }
 
     func markNeedsReview(ids: Set<LocalizeItem.ID>? = nil) {
         let itemIDs = ids ?? self.selected
         
         for itemID in itemIDs {
-            guard let item = item(with: itemID) else {
-                continue
-            }
-            if item.needsReview == false {
-                item.needsReview = true
-                isModified = true
+            updateItem(with: itemID) { item in
+                if item.needsReview == false {
+                    item.needsReview = true
+                    isModified = true
+                }
             }
         }
     }
@@ -770,15 +944,26 @@ class AppModel {
         let itemIDs = ids ?? self.selected
         
         for itemID in itemIDs {
-            guard let item = item(with: itemID), item.parentID == nil else {
-                continue
+            updateItem(with: itemID) { item in
+                guard item.parentID == nil else {
+                    return
+                }
+                item.shouldTranslate = shouldTranslate
+                updatedIDs.append(item.id)
+                
+                // update children
+                // TODO: recursive? optimize
+                var children = item.children
+                if children != nil {
+                    for i in 0 ..< children!.count {
+                        children![i].shouldTranslate = shouldTranslate
+                    }
+                    item.children = children
+                }
             }
-            item.shouldTranslate = shouldTranslate
-            updatedIDs.append(item.id)
-            // update children
-            item.children?.forEach { $0.shouldTranslate = shouldTranslate }
         }
-        
+
+        // TODO: check subitems
         let languages = self.languages.filter { $0 != currentLanguage }
         var ids = [LocalizeItem.ID]()
         for itemID in updatedIDs {
@@ -789,27 +974,17 @@ class AppModel {
                 ids.append(id)
             }
         }
-
-        for itemID in ids {
-            guard let item = item(with: itemID, in: allLocalizeItems) else {
-                continue
-            }
-            item.shouldTranslate = shouldTranslate
-            // update children
-            item.children?.forEach { $0.shouldTranslate = shouldTranslate }
-        }
     }
 
     func reviewed(ids: Set<LocalizeItem.ID>? = nil) {
         let itemIDs = ids ?? self.selected
         
         for itemID in itemIDs {
-            guard let item = item(with: itemID) else {
-                continue
-            }
-            if item.needsReview == true {
-                item.needsReview = false
-                isModified = true
+            updateItem(with: itemID) { item in
+                if item.needsReview == true {
+                    item.needsReview = false
+                    isModified = true
+                }
             }
         }
     }
@@ -821,10 +996,9 @@ class AppModel {
         let itemIDs = ids ?? self.selected
         
         for itemID in itemIDs {
-            guard let item = item(with: itemID) else {
-                continue
+            updateItem(with: itemID) { item in
+                markTranslateLater(for: item, value: value)
             }
-            markTranslateLater(for: item, value: value)
         }
         if let settingsFileURL {
             settings.save(to: settingsFileURL)
@@ -839,9 +1013,20 @@ class AppModel {
             return
         }
 
-        item.translateLater = value
+        var updatedItem = item
+        
+        updatedItem.translateLater = value
+
         // update children
-        item.children?.forEach { $0.translateLater = value }
+        var children = updatedItem.children
+        if children != nil {
+            for i in 0 ..< children!.count {
+                children![i].translateLater = value
+            }
+            updatedItem.children = children
+        }
+        
+        updateItem(updatedItem)
 
         if value {
             if settings.translateLater.contains(item.id) == false {
@@ -863,25 +1048,35 @@ class AppModel {
         let itemIDs = ids ?? self.selected
         
         for itemID in itemIDs {
-            guard let item = item(with: itemID), item.parentID == nil else {
-                continue
+            updateItem(with: itemID) { item in
+                guard item.parentID == nil else {
+                    return
+                }
+
+                item.needsWork = value
+                updatedIDs.append(item.id)
+
+                var children = item.children
+                if children != nil {
+                    for i in 0 ..< children!.count {
+                        children![i].needsWork = value
+                    }
+                    item.children = children
+                }
+
             }
-            item.needsWork = value
-            updatedIDs.append(item.id)
-            // update children
-            item.children?.forEach { $0.needsWork = value }
             
             if value {
-                if settings.needsWork.contains(item.id) == false {
-                    settings.needsWork.append(item.id)
+                if settings.needsWork.contains(itemID) == false {
+                    settings.needsWork.append(itemID)
                 }
             } else {
-                if let index = settings.needsWork.firstIndex(of: item.id) {
+                if let index = settings.needsWork.firstIndex(of: itemID) {
                     settings.needsWork.remove(at: index)
                 }
             }
         }
-        
+
         if allLanguages {
             let languages = self.languages.filter { $0 != currentLanguage }
             var ids = [LocalizeItem.ID]()
@@ -895,19 +1090,30 @@ class AppModel {
             }
             
             for itemID in ids {
-                guard let item = item(with: itemID, in: allLocalizeItems) else {
-                    continue
+                updateItem(with: itemID) { item in
+                    guard item.parentID == nil else {
+                        return
+                    }
+
+                    item.needsWork = value
+                    updatedIDs.append(item.id)
+
+                    var children = item.children
+                    if children != nil {
+                        for i in 0 ..< children!.count {
+                            children![i].needsWork = value
+                        }
+                        item.children = children
+                    }
+
                 }
-                item.needsWork = value
-                // update children
-                item.children?.forEach { $0.needsWork = value }
                 
                 if value {
-                    if settings.needsWork.contains(item.id) == false {
-                        settings.needsWork.append(item.id)
+                    if settings.needsWork.contains(itemID) == false {
+                        settings.needsWork.append(itemID)
                     }
                 } else {
-                    if let index = settings.needsWork.firstIndex(of: item.id) {
+                    if let index = settings.needsWork.firstIndex(of: itemID) {
                         settings.needsWork.remove(at: index)
                     }
                 }
@@ -921,46 +1127,53 @@ class AppModel {
     }
         
     func clearNeedsWork(allLanguages: Bool = false) {
-        let items = allLanguages ? self.allLocalizeItems : self.localizeItems
+        var items = allLanguages ? self.allLocalizeItems : self.localizeItems
         
-        func unmarkNeedsWork(items: [LocalizeItem]) {
-            for item in items {
-                if item.needsWork {
-                    item.needsWork = false
-                    if let index = settings.needsWork.firstIndex(of: item.id) {
+        func unmarkNeedsWork(items: inout [LocalizeItem]) {
+            for index in items.indices {
+                if items[index].needsWork {
+                    items[index].needsWork = false
+                    if items[index].children != nil {
+                        unmarkNeedsWork(items: &items[index].children!)
+                    }
+                    if let index = settings.needsWork.firstIndex(of: items[index].id) {
                         settings.needsWork.remove(at: index)
                     }
                 }
-                
-                // children
-                if let children = item.children {
-                    unmarkNeedsWork(items: children)
-                }
             }
         }
-        
-        unmarkNeedsWork(items: items)
+        unmarkNeedsWork(items: &items)
 
+        if allLanguages {
+            self.allLocalizeItems = items
+            reloadData()
+        } else {
+            self.localizeItems = items
+        }
+
+        // save settings (updated needsWork items)
         if let settingsFileURL {
             settings.save(to: settingsFileURL)
         }
     }
-    
+
     func clearModifiedMark() {
-        let items = self.allLocalizeItems
+        var items = self.allLocalizeItems
         
-        func removeModifiedMark(items: [LocalizeItem]) {
-            for item in items {
-                if item.isModified {
-                    item.isModified = false
-                }
-                // children
-                if let children = item.children {
-                    removeModifiedMark(items: children)
+        func removeModifiedMark(items: inout [LocalizeItem]) {
+            for index in items.indices {
+                items[index].isModified = false
+                if items[index].children != nil {
+                    removeModifiedMark(items: &items[index].children!)
                 }
             }
         }
-        removeModifiedMark(items: items)
+        
+        removeModifiedMark(items: &items)
+        
+        self.allLocalizeItems = items
+        
+        reloadData()
     }
 
     

@@ -8,22 +8,7 @@
 import Foundation
 import SwiftUI
 
-@Observable
-class LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
-    static func == (lhs: LocalizeItem, rhs: LocalizeItem) -> Bool {
-        return lhs.id == rhs.id
-        && lhs.translation == rhs.translation
-        && lhs.reverseTranslation == rhs.reverseTranslation
-        && lhs.state == rhs.state
-        && lhs.isModified == rhs.isModified
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    static let ID_DIVIDER = "|XCSTRINGEDITORDIVIDER|"
-    
+struct LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
     enum State: Int, Comparable {
         static func < (lhs: LocalizeItem.State, rhs: LocalizeItem.State) -> Bool {
             return lhs.rawValue < rhs.rawValue
@@ -37,6 +22,8 @@ class LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
         case stale
         case translated
     }
+
+    static let ID_DIVIDER = "|XCSTRINGEDITORDIVIDER|"
     
     var id: String
     var parentID: String?
@@ -97,6 +84,19 @@ class LocalizeItem: Identifiable, Hashable, CustomStringConvertible {
     
     var children: [LocalizeItem]?
     
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
+//    static func == (lhs: LocalizeItem, rhs: LocalizeItem) -> Bool {
+//        return lhs.id == rhs.id
+//        && lhs.translation == rhs.translation
+//        && lhs.reverseTranslation == rhs.reverseTranslation
+//        && lhs.state == rhs.state
+//        && lhs.isModified == rhs.isModified
+//    }
+
     var description: String {
         var result = "\(key), \(language.code), \(translation ?? "nil"), NeedsReview: \(needsReview), Modified: \(isModified)"
         
