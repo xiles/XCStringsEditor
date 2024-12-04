@@ -691,10 +691,10 @@ class AppModel {
         var allItems = self.allLocalizeItems
         await update(items: &allItems)
 
-        Task { @MainActor in
+        await Task { @MainActor in
             self.localizeItems = items
             self.allLocalizeItems = allItems
-        }
+        }.value
     }
     
     // Update function for edited items
