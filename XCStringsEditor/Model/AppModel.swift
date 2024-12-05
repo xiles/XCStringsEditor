@@ -347,6 +347,10 @@ class AppModel {
     private func filteredItems() -> [LocalizeItem] {
         // TODO: filter sub items
 
+        if isModified {
+            updateAllLocalizedItems()
+        }
+        
         return allLocalizeItems.filter {
             if $0.language != currentLanguage {
                 return false
