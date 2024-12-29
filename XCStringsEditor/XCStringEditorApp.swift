@@ -249,10 +249,19 @@ struct XCStringEditorApp: App {
             }
         } // commands
         
+        if #available(macOS 15.0, *) {
+            Window("Welcome", id: "welcome") {
+                WelcomeView()
+                    .environment(appModel)
+            }
+            .windowStyle(.hiddenTitleBar)
+            .windowResizability(.contentSize)
+            .defaultLaunchBehavior(.presented)
+        }
+        
         Settings {
             SettingsView()
                 .environment(appModel)
-
         }
     }
 }
