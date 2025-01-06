@@ -40,46 +40,49 @@ struct WelcomeView: View {
                 Spacer()
             }
             .padding(64)
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: 400)
             .background(.thinMaterial)
             
-            VStack(alignment: .leading) {
-                let recents = (UserDefaults.standard.array(forKey: "RecentFiles") as? [String])?.map { URL(filePath: $0) } ?? [URL]()
-                if recents.isEmpty == false {
-                    ForEach(recents.reversed(), id: \.self) { url in
-                        Button {
-                            openWindow(id: "main")
-                            dismissWindow()
-                            
-                            appModel.load(file: url)
-                            
-                            var recents = UserDefaults.standard.array(forKey: "RecentFiles") as? [String] ?? [String]()
-                            if let index = recents.firstIndex(where: { $0 == url.path(percentEncoded: false) }) {
-                                recents.remove(at: index)
-                                recents.append(url.path(percentEncoded: false))
-                                UserDefaults.standard.set(recents, forKey: "RecentFiles")
-                            }
-                        } label: {
-                            HStack {
-                                Image(nsImage: NSWorkspace.shared.icon(forFile: url.path(percentEncoded: false)))
-                                    .resizable()
-                                    .frame(width: 32, height: 32)
-                                VStack(alignment: .leading) {
-                                    Text(verbatim: url.lastPathComponent)
-                                        .fontWeight(.bold)
-                                    Text(filePath(url))
-                                        .font(.footnote)
-                                        .foregroundColor(.secondary)
+            ScrollView {
+                LazyVStack(alignment: .leading) {
+                    let recents = (UserDefaults.standard.array(forKey: "RecentFiles") as? [String])?.map { URL(filePath: $0) } ?? [URL]()
+                    if recents.isEmpty == false {
+                        ForEach(recents.reversed(), id: \.self) { url in
+                            Button {
+                                openWindow(id: "main")
+                                dismissWindow()
+                                
+                                appModel.load(file: url)
+                                
+                                var recents = UserDefaults.standard.array(forKey: "RecentFiles") as? [String] ?? [String]()
+                                if let index = recents.firstIndex(where: { $0 == url.path(percentEncoded: false) }) {
+                                    recents.remove(at: index)
+                                    recents.append(url.path(percentEncoded: false))
+                                    UserDefaults.standard.set(recents, forKey: "RecentFiles")
                                 }
+                            } label: {
+                                HStack {
+                                    Image(nsImage: NSWorkspace.shared.icon(forFile: url.path(percentEncoded: false)))
+                                        .resizable()
+                                        .frame(width: 32, height: 32)
+                                    VStack(alignment: .leading) {
+                                        Text(verbatim: url.lastPathComponent)
+                                            .fontWeight(.bold)
+                                        Text(filePath(url))
+                                            .font(.footnote)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                                .padding(.vertical, 5)
                             }
-                            .padding(.vertical, 5)
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(PlainButtonStyle())
                     }
                 }
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
-            .padding()
-            .frame(maxWidth: 300, maxHeight: .infinity, alignment: .topLeading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background(.background)
         }
         .frame(minWidth: 800, minHeight: 400)
