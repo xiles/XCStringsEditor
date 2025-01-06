@@ -292,7 +292,7 @@ struct ContentView: View {
     }
     
     private func sourceColumnView(item: LocalizeItem) -> some View {
-        Text(verbatim: "\(item.sourceString)")
+        Text(item.sourceString)
             .lineLimit(nil)
             .multilineTextAlignment(.leading)
             .fixedSize(horizontal: false, vertical: true)
@@ -307,7 +307,7 @@ struct ContentView: View {
             (
                 Text(image)
                     .foregroundStyle(.green) +
-                Text(verbatim: " \(item.reverseTranslation ?? "")")
+                Text(item.reverseTranslation ?? "")
             )
             .lineLimit(nil)
             .fixedSize(horizontal: false, vertical: true)
